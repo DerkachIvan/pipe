@@ -24,6 +24,10 @@ class Map {
         object.x = x;
         object.y = y;
         object.cellSize = this.cellSize;
+        object.leftBound = x * this.cellSize;
+        object.rightBound = (x + 1) * this.cellSize;
+        object.topBound = y * this.cellSize;
+        object.bottomBound = (y + 1) * this.cellSize;
         this.grid[x][y] = object;
         this.objects.push(object);
     }

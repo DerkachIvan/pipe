@@ -37,4 +37,23 @@ class GameObject {
     Draw() {
 
     }
+
+    getNeighbors(){
+        const dirs = [
+            {x: 0, y: -1},
+            {x: 0, y: 1},
+            {x: -1, y: 0},
+            {x: 1, y: 0},
+        ];
+
+        let result = []
+
+        for(let d of dirs){
+            let n = map.get(this.x + d.x, this.y + d.y);
+            if (n instanceof GameObject){
+                result.push(n);
+            }
+        }
+        return result;
+    }
 }

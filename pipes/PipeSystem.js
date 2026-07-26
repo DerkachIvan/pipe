@@ -1,16 +1,14 @@
 class PipeSystem{
-    maxFlowLevel = 20;
+    maxFlowLevel = 10;
     constructor(map){
         this.map = map;
         this.pipes = map.getAllWithTag("Pipe");
     }
 
     Update(){
-        this.pipes = map.getAllWithTag("Pipe")
+        this.pipes = this.map.getAllWithTag("Pipe");
         this.bfs();
         this.flowStep();
-        this.consumeStep();
-        this.applyStep();
     }
 
     bfs(){
@@ -18,8 +16,8 @@ class PipeSystem{
             p.flowLevel = Infinity;
         }
 
+        //get source pipes
         let queue = [];
-
         for(let p of this.pipes){
             if(p.isSource){
                 p.flowLevel = 0;
@@ -27,11 +25,12 @@ class PipeSystem{
             }
         }
 
+        //bfs
         while(queue.length){
             let p = queue.shift();
             if(p.flowLevel >= this.maxFlowLevel) continue;
 
-            for(let n of p.getNeighbors(this.map)){
+            for(let n of p.getNeighborsPipes()){
                 let newLevel = p.flowLevel + 1;
                 if(newLevel < n.flowLevel){
                     n.flowLevel = newLevel;
@@ -47,12 +46,12 @@ class PipeSystem{
         }
 
         for(let p of this.pipes){
-
+            if (p.isOutput) continue;
             if (p.currentFill <= 0) continue;
 
             let valid = [];
 
-            for(let n of p.getNeighbors(this.map)){
+            for(let n of p.getNeighborsPipes()){
                 if(!isFinite(n.flowLevel)) continue;
                 if (n.flowLevel > p.flowLevel){
                     valid.push(n);
@@ -61,18 +60,10 @@ class PipeSystem{
 
             if (valid.length === 0) continue;
 
-            let totalWeight = 0;
+            let transferPerNeighbor = p.currentFill / valid.length;
 
             for(let n of valid){
-                totalWeight += (n.flowLevel - p.flowLevel);
-            }
-
-            for(let n of valid){
-
-                let weight = (n.flowLevel - p.flowLevel) / totalWeight;
-
-                let transfer = p.currentFill * weight;
-
+                let transfer = transferPerNeighbor;
                 let space = n.capacity - n.nextFill;
                 let actual = Math.min(transfer, space);
 
@@ -82,7 +73,7 @@ class PipeSystem{
         }
 
         for(let p of this.pipes){
-            for(let n of p.getNeighbors(this.map)){
+            for(let n of p.getNeighborsPipes()){
                 if(n.flowLevel !== p.flowLevel) continue;
                 let diff = p.nextFill - n.nextFill;
                 if (diff <= 0) continue;
@@ -95,21 +86,9 @@ class PipeSystem{
                 n.nextFill += actual;
             }
         }
-    }
 
-    consumeStep(){
         for(let p of this.pipes){
-            if(p.isOutput){
-                let consumeRate = 0.1;
-                let used = Math.min(p.nextFill, consumeRate);
-                p.nextFill -= used;
-            }
-        }
-    }
-
-    applyStep(){
-        for (let p of this.pipes){
-            p.currentFill = Math.max(0, Math.min(p.capacity, p.nextFill));
+            p.currentFill = p.nextFill;
         }
     }
 }
