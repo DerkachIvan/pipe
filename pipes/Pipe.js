@@ -50,7 +50,7 @@ class Pipe extends GameObject{
             this.cellSize, lerpNumber(0, this.cellSize, this.currentFill / this.capacity)
         );
 
-        //goins//
+        //joins//
         //top
         if(map.get(this.x, this.y - 1) instanceof Pipe){
             this.ctx.fillStyle = "gray";
