@@ -31,6 +31,8 @@ var selectedObject = null;
 var pipeSystem;
 
 function Start(){
+    Pipe.loadSprites();
+    
     map = new Map(ctx, MX, MY, cellSize);
     let a = new Pipe(ctx, 0, 0);
     let c = new Pipe(ctx, 10, 0);

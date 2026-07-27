@@ -46,3 +46,12 @@ function distance(x1, y1, x2, y2) {
     return Math.hypot(x2 - x1, y2 - y1);
 }
 
+function drawRotImg(ctx, img, x, y, deg) {
+    ctx.save();
+
+    ctx.translate(x, y);
+    ctx.rotate(degToRad(deg));
+    ctx.drawImage(img, -img.width / 2, -img.height / 2, img.width, img.height);
+
+    ctx.restore();
+}
