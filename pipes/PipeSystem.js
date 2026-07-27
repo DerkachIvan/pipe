@@ -44,7 +44,6 @@ class PipeSystem{
         }
 
         for(let p of this.pipes){
-            if (p.isOutput) continue;
             if (p.currentFill <= 0) continue;
 
             let valid = [];

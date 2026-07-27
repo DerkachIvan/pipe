@@ -11,6 +11,7 @@ class Pipe extends GameObject{
         this.nextFill = 0;
 
         this.flowLevel = Infinity;
+        
 
         this.isSource = false;
         this.isOutput = false;

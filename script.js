@@ -34,6 +34,7 @@ function LoadObjectsSprites() {
     Pipe.loadSprites();
     Pump.loadSprites();
     FluidGenerator.loadSprites();
+    Drain.loadSprites();
 }
 
 function Start(){
@@ -132,11 +133,7 @@ document.addEventListener("keydown", function(e) {
         map.set(gridPos.x, gridPos.y, newFluidGenerator);
     }
     if (e.key === "3"){
-        let newPipe = new Pipe(ctx, gridPos.x, gridPos.y);
-        newPipe.isOutput = true
-        
-        newPipe.capacity = 1;
-        newPipe.consumptionRate = 0.03;
+        let newPipe = new Drain(ctx, gridPos.x, gridPos.y);
         map.set(gridPos.x, gridPos.y, newPipe);
     }
     if (e.key === "4"){
