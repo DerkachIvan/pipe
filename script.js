@@ -16,7 +16,7 @@ var totalFill = 0;
 var mouseX = 0;
 var mouseY = 0;
 
-
+var DEBUG = false;
 var lastFrameTime = performance.now();
 var fps = 0;
 var frameCount = 0;
@@ -30,15 +30,21 @@ var map
 var selectedObject = null;
 var pipeSystem;
 
-function Start(){
+function LoadObjectsSprites() {
     Pipe.loadSprites();
+    Pump.loadSprites();
+    FluidGenerator.loadSprites();
+}
+
+function Start(){
+    LoadObjectsSprites();
     
     map = new Map(ctx, MX, MY, cellSize);
     let a = new Pipe(ctx, 0, 0);
     let c = new Pipe(ctx, 10, 0);
-
-    a.isSource = true
-    c.isOutput = true
+      
+    a.productionRate = 0.05;
+    c.consumptionRate = 0.03;
 
     a.capacity = 10;
     a.currentFill = 10;
@@ -60,11 +66,7 @@ function Update() {
     map.Update();
     pipeSystem.Update();
     map.Draw();
-    if(selectedObject instanceof Pipe){
-        let panel = new Panel(ctx, selectedObject.rightBound, selectedObject.topBound, 50, 20);
-        panel.text = "Pipe: " + selectedObject?.currentFill.toFixed(2);
-        panel.Draw();
-    }
+    GameObject.DrawSelectedObjectInfo(ctx);
 }
 
 function calcTime(){
@@ -101,10 +103,9 @@ canvas.addEventListener("mousedown", function(e) {
     var gridPos = positionToGrid(mouseX, mouseY);
     if (e.button === 0) {
         console.log("Левая кнопка: ", gridPos);
-        selectedObject = map.get(gridPos.x, gridPos.y);
-        if (selectedObject) {
-            selectedObject.selected = true;
-        }
+        GameObject.SELECTED_OBJECT = map.get(gridPos.x, gridPos.y);
+            
+
     } else if (e.button === 2) {
         console.log("ПКМ нажата на: ", gridPos);
         let obj = new Pipe(ctx, gridPos.x, gridPos.y);
@@ -119,22 +120,33 @@ document.addEventListener("keydown", function(e) {
         //system.Update();
     }
     if (e.key === "2"){
-        let newPipe = new Pipe(ctx, gridPos.x, gridPos.y);
-        newPipe.isSource = true
-
-        newPipe.capacity = 10;
-        newPipe.currentFill = 10;
-        map.set(gridPos.x, gridPos.y, newPipe);
+        let newFluidGenerator = new FluidGenerator(ctx, gridPos.x, gridPos.y);
+        map.set(gridPos.x, gridPos.y, newFluidGenerator);
     }
     if (e.key === "3"){
         let newPipe = new Pipe(ctx, gridPos.x, gridPos.y);
         newPipe.isOutput = true
-
+        
         newPipe.capacity = 1;
+        newPipe.consumptionRate = 0.03;
         map.set(gridPos.x, gridPos.y, newPipe);
+    }
+    if (e.key === "4"){
+        let newPump = new Pump(ctx, gridPos.x, gridPos.y, "down");
+
+        map.set(gridPos.x, gridPos.y, newPump);
     }
     if (e.key === "Delete"){
         map.deleteGameObject(gridPos.x, gridPos.y);
+    }
+    if (e.key.toLowerCase() === "r"){
+        let obj = map.get(gridPos.x, gridPos.y);
+        if (obj instanceof GameObject){
+            obj.Rotate();
+        }
+    }
+    if (e.key.toLowerCase() === "d"){
+        DEBUG = !DEBUG;
     }
 });
 

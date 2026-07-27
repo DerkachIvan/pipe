@@ -1,9 +1,11 @@
 class GameObject {
+    static SELECTED_OBJECT = null;
     texture = null;
     cellSize = 30;
     selected = false;
     tag = ["GameObject"];
     ID = -1;
+    selected = false;
     constructor(ctx, x, y) {
         this.ctx = ctx;
         this.x = x;
@@ -18,12 +20,24 @@ class GameObject {
         return this.ID;
     }
 
+    static DrawSelectedObjectInfo(ctx) {
+        if (GameObject.SELECTED_OBJECT instanceof GameObject) {
+            GameObject.SELECTED_OBJECT?.DrawInfo(ctx);
+            GameObject.SELECTED_OBJECT.selected = true;
+        }
+    }
+
     SetTag(tag){
         this.tag.push(tag);
     }
 
     CheckTag(tag){
-        return this.tag.includes(tag);
+        if (typeof tag === "string") return this.tag.includes(tag);
+        if (Array.isArray(tag)) return tag.some(t => this.tag.includes(t));
+    }
+
+    Rotate(){
+
     }
 
     Start(){
@@ -35,6 +49,10 @@ class GameObject {
     }
 
     Draw() {
+
+    }
+
+    static loadSprites(){
 
     }
 

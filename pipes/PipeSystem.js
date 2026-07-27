@@ -16,7 +16,6 @@ class PipeSystem{
             p.flowLevel = Infinity;
         }
 
-        //get source pipes
         let queue = [];
         for(let p of this.pipes){
             if(p.isSource){
@@ -25,15 +24,14 @@ class PipeSystem{
             }
         }
 
-        //bfs
         while(queue.length){
             let p = queue.shift();
             if(p.flowLevel >= this.maxFlowLevel) continue;
-
             for(let n of p.getNeighborsPipes()){
-                let newLevel = p.flowLevel + 1;
-                if(newLevel < n.flowLevel){
-                    n.flowLevel = newLevel;
+                let nextLevel = p.flowLevel + 1;
+
+                if(nextLevel < n.flowLevel){
+                    n.flowLevel = nextLevel;
                     queue.push(n);
                 }
             }

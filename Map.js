@@ -7,6 +7,8 @@ class Map {
         this.cellSize = cellSize;
         this.grid = [];
         this.objects = [];
+        this.FluidMashines = [];
+        this.Pipes = [];
         this.lastObjectID = 0;
 
         for (let i = 0; i < width; i++) {
@@ -30,6 +32,13 @@ class Map {
         object.bottomBound = (y + 1) * this.cellSize;
         this.grid[x][y] = object;
         this.objects.push(object);
+
+        if(object.CheckTag("FluidMashine")){
+            this.FluidMashines.push(object);
+        }
+        if(object.CheckTag("Pipe")){
+            this.Pipes.push(object);
+        }
     }
 
     get(x, y) {
@@ -64,10 +73,26 @@ class Map {
     }
 
     Update(){
+        let fluidMashine = [];
+        let pipes = [];
+        
+        // Single pass to categorize objects
         for (let obj of this.objects) {
-            if (obj instanceof GameObject){
-                obj.Update();
+            if (obj.CheckTag("FluidMashine")) {
+                fluidMashine.push(obj);
+            } else if (obj instanceof Pipe) {
+                pipes.push(obj);
             }
+        }
+        
+        // Update pipes first
+        for (let obj of pipes) {
+            obj.Update();
+        }
+        
+        // Then update fluidMashine
+        for (let obj of fluidMashine) {
+            obj.Update();
         }
     }
 
