@@ -26,10 +26,18 @@ class Pump extends GameObject {
 
         if(this.input instanceof Pipe){
             this.input.isOutput = true;
+        }else if (this.input instanceof Pump){
+            this.input = this.input.input;
         }
+
+
         if(this.output instanceof Pipe){
             this.output.isSource = true;
+        }else if (this.output instanceof Pump){
+            this.output = this.output.output;
         }
+
+
         if (
             this.input && this.output &&
             this.input.CheckTag(["Pipe", "FluidMashine"]) && this.output.CheckTag(["Pipe", "FluidMashine"])

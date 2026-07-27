@@ -40,13 +40,11 @@ function Start(){
     LoadObjectsSprites();
     
     map = new Map(ctx, MX, MY, cellSize);
-    let a = new Pipe(ctx, 0, 0);
+    let a = new FluidGenerator(ctx, 0, 0);
     let c = new Pipe(ctx, 10, 0);
       
-    a.productionRate = 0.05;
     c.consumptionRate = 0.03;
 
-    a.capacity = 10;
     a.currentFill = 10;
 
     map.set(0, 0, a);
@@ -67,6 +65,16 @@ function Update() {
     pipeSystem.Update();
     map.Draw();
     GameObject.DrawSelectedObjectInfo(ctx);
+
+    //draw FPS
+    ctx.save();
+    ctx.fillStyle = "black";
+    ctx.font = "bold 12px Arial";
+    if (DEBUG) {
+        ctx.fillText(`FPS: ${fps}`, 10, 20);
+        ctx.fillText(`Time: ${time.toFixed(2)}s`, 10, 40);
+    }
+    ctx.restore();
 }
 
 function calcTime(){
