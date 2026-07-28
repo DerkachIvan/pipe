@@ -50,7 +50,11 @@ class PipeSystem{
 
             for(let n of p.getNeighborsPipes()){
                 if(!isFinite(n.flowLevel)) continue;
-                if (n.flowLevel > p.flowLevel){
+                if (
+                    n.flowLevel > p.flowLevel &&
+                    (n.fluidType === null || n.fluidType === p.fluidType)
+                ){
+                    n.fluidType = p.fluidType;
                     valid.push(n);
                 }
             }

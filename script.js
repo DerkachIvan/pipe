@@ -112,6 +112,9 @@ canvas.addEventListener("mousedown", function(e) {
     var gridPos = positionToGrid(mouseX, mouseY);
     if (e.button === 0) {
         console.log("Левая кнопка: ", gridPos);
+        if (GameObject.SELECTED_OBJECT) {
+            GameObject.SELECTED_OBJECT.selected = false;
+        }
         GameObject.SELECTED_OBJECT = map.get(gridPos.x, gridPos.y);
             
 
@@ -126,10 +129,13 @@ document.addEventListener("keydown", function(e) {
     var gridPos = positionToGrid(mouseX, mouseY);
     console.log("Нажата клавиша: ", e.key, " на клетке: ", gridPos);
     if (e.key === "1"){
-        //system.Update();
+        let newFluidGenerator = new FluidGenerator(ctx, gridPos.x, gridPos.y);
+        newFluidGenerator.fluidType = "oil"; // Set the fluid type to oil
+        map.set(gridPos.x, gridPos.y, newFluidGenerator);
     }
     if (e.key === "2"){
         let newFluidGenerator = new FluidGenerator(ctx, gridPos.x, gridPos.y);
+        newFluidGenerator.fluidType = "water"; // Set the fluid type to water
         map.set(gridPos.x, gridPos.y, newFluidGenerator);
     }
     if (e.key === "3"){
@@ -138,7 +144,6 @@ document.addEventListener("keydown", function(e) {
     }
     if (e.key === "4"){
         let newPump = new Pump(ctx, gridPos.x, gridPos.y, "down");
-
         map.set(gridPos.x, gridPos.y, newPump);
     }
     if (e.key === "Delete"){

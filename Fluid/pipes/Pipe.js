@@ -11,7 +11,8 @@ class Pipe extends GameObject{
         this.nextFill = 0;
 
         this.flowLevel = Infinity;
-        
+        this.fluidType = null;
+        this.thresholdFluidTypeReset = 0.0001; // Threshold for resetting fluid type when currentFill is low
 
         this.isSource = false;
         this.isOutput = false;
@@ -33,7 +34,7 @@ class Pipe extends GameObject{
         
         for (let name of spriteNames) {
             let img = new Image();
-            img.src = `pipes/pipe sprites/pipe ${name}.png`;
+            img.src = `Fluid/pipes/pipe sprites/pipe ${name}.png`;
             Pipe.sprites[name] = img;
         }
     }
@@ -60,6 +61,10 @@ class Pipe extends GameObject{
     Update(){
         this.isOutput = false;
         this.isSource = false;
+
+        if (this.currentFill <= this.thresholdFluidTypeReset) {
+            this.fluidType = null;
+        }
 
         this.joinDirections.up = map.get(this.x, this.y - 1) instanceof GameObject &&
             map.get(this.x, this.y - 1).CheckTag(["Pipe", "Pump", "FluidMashine"]);
@@ -97,7 +102,7 @@ class Pipe extends GameObject{
             
             // Draw fluid fill overlay
             let fillHeight = lerpNumber(0, this.cellSize, this.currentFill / this.capacity);
-            this.ctx.fillStyle = "rgba(0, 100, 255, 0.4)";
+            this.ctx.fillStyle = FLUID_TYPES[this.fluidType].color;
             this.ctx.fillRect(
                 this.leftBound, 
                 this.topBound + this.cellSize - fillHeight,
@@ -141,11 +146,16 @@ class Pipe extends GameObject{
     DrawInfo(ctx) {
         ctx.save();
         ctx.fillStyle = "lightgrey";
-        ctx.fillRect(this.rightBound, this.topBound - 5, 100, 40);
+        ctx.fillRect(this.rightBound, this.topBound - 5, 110, 45);
         ctx.fillStyle = "black";
         ctx.font = "bold 12px Arial";
         ctx.fillText(`Pipe`, this.rightBound + 5, this.topBound+10);
-        ctx.fillText(`Fill: ${this.currentFill.toFixed(2)} / ${this.capacity}`, this.rightBound + 5, this.topBound + 25);
+        ctx.fillText(`Fill ${this.fluidType}: ${this.currentFill.toFixed(2)} / ${this.capacity}`, this.rightBound + 5, this.topBound + 25);
+        
+        ctx.fillStyle = FLUID_TYPES[this.fluidType].color;
+        ctx.fillRect(this.rightBound + 5, this.topBound + 30, lerpNumber(0, 100, this.currentFill / this.capacity), 5);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(this.rightBound + 5, this.topBound + 30, 100, 5);
         ctx.restore();
     }
 

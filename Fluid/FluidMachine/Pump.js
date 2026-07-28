@@ -1,8 +1,9 @@
-class Pump extends GameObject {
+class Pump extends FluidMachine {
     static sprites = {};
     
     constructor(ctx, x, y, direction) {
-        super(ctx, x, y);
+        super(ctx, x, y, 0); // Call the parent constructor with a default capacity of 10
+        this.name = "Pump";
         this.SetTag("Pump");
         this.SetTag("FluidMashine");
 
@@ -40,8 +41,13 @@ class Pump extends GameObject {
 
         if (
             this.input && this.output &&
-            this.input.CheckTag(["Pipe", "FluidMashine"]) && this.output.CheckTag(["Pipe", "FluidMashine"])
+            this.input.CheckTag(["Pipe", "FluidMashine"]) &&
+            this.output.CheckTag(["Pipe", "FluidMashine"]) &&
+            (this.input.fluidType === this.output.fluidType || this.output.fluidType === null)
         ) {
+            if (this.output.fluidType === null) {
+                this.output.fluidType = this.input.fluidType;
+            }
             let outputFreeSpace = this.output.capacity - this.output.currentFill;
             let amountToTransfer = Math.min(this.workRate, this.input.currentFill, outputFreeSpace);
 
@@ -64,7 +70,7 @@ class Pump extends GameObject {
         
         for (let name of spriteNames) {
             let img = new Image();
-            img.src = `pipes/pump sprites/pump ${name}.png`;
+            img.src = `Fluid/pipes/pump sprites/pump ${name}.png`;
             Pump.sprites[name] = img;
         }
     }
@@ -99,5 +105,9 @@ class Pump extends GameObject {
         }
             
         this.ctx.restore();
+    }
+
+    DrawInfo(){
+        
     }
 }

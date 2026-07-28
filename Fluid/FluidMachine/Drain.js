@@ -1,31 +1,22 @@
-class Drain extends GameObject {
+class Drain extends FluidMachine {
     static sprites = {};
 
-    constructor(ctx, x, y) {
-        super(ctx, x, y);
+    constructor(ctx, x, y, capacity = 10) {
+        super(ctx, x, y, capacity);
+        this.name = "Drain";
 
         this.SetTag("Drain");
-        this.SetTag("FluidMashine");
-
-        this.capacity = 10;
-        this.currentFill = 0;
 
         this.consumptionRate = 1;
         this.consumptionPerSecond = 2;
 
-        this.joinDirections = {
-            up: false,
-            down: false,
-            left: false,
-            right: false
-        };        
         console.log("Drain created at", x, y);
     }
 
     static loadSprites() {
         const spriteName = "drain"; // Assuming a single sprite for Drain
         let img = new Image();
-        img.src = `pipes/${spriteName}.png`;
+        img.src = `Fluid/FluidMachine/${spriteName}.png`;
         Drain.sprites[spriteName] = img;
     }
 
@@ -63,16 +54,5 @@ class Drain extends GameObject {
         }
         
         this.ctx.restore();
-    }
-
-    DrawInfo(ctx) {
-        ctx.save();
-        ctx.fillStyle = "lightgrey";
-        ctx.fillRect(this.rightBound, this.topBound - 5, 100, 40);
-        ctx.fillStyle = "black";
-        ctx.font = "bold 12px Arial";
-        ctx.fillText(`Drain`, this.rightBound + 5, this.topBound+10);
-        ctx.fillText(`Fill: ${this.currentFill.toFixed(2)} / ${this.capacity}`, this.rightBound + 5, this.topBound + 25);
-        ctx.restore();
     }
 }
