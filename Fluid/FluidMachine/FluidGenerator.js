@@ -46,7 +46,7 @@ class FluidGenerator extends FluidMachine {
 
         this.getNeighbors().forEach(neighbor => {
             if (neighbor instanceof GameObject && neighbor.CheckTag("Pipe")) {
-                if (neighbor.fluidType === null || neighbor.fluidType === this.fluidType) {
+                if (neighbor.fluidType === "empty" || neighbor.fluidType === this.fluidType || neighbor.currentFill <= 0) {
                     let neighborFreeSpace = neighbor.capacity - neighbor.currentFill;
                     let amountToTransfer = Math.min(this.currentFill, neighborFreeSpace);
                     this.currentFill -= amountToTransfer;

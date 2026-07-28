@@ -43,9 +43,9 @@ class Pump extends FluidMachine {
             this.input && this.output &&
             this.input.CheckTag(["Pipe", "FluidMashine"]) &&
             this.output.CheckTag(["Pipe", "FluidMashine"]) &&
-            (this.input.fluidType === this.output.fluidType || this.output.fluidType === null)
+            (this.input.fluidType === this.output.fluidType || this.output.fluidType === "empty")
         ) {
-            if (this.output.fluidType === null) {
+            if (this.output.fluidType === "empty") {
                 this.output.fluidType = this.input.fluidType;
             }
             let outputFreeSpace = this.output.capacity - this.output.currentFill;
@@ -108,6 +108,6 @@ class Pump extends FluidMachine {
     }
 
     DrawInfo(){
-        
+
     }
 }

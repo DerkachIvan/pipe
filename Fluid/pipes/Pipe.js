@@ -7,11 +7,20 @@ class Pipe extends GameObject{
         this.SetTag("Pipe");
 
         this.capacity = 5;
+        this.fluid = new Fluid("empty", 0);
+        this.hasFluid = false;
+        Object.defineProperty(this, "fluidType", {
+            get: () => this.fluid.type,
+            set: (value) => { this.fluid.type = value; }
+        });
+        Object.defineProperty(this, "currentFill", {
+            get: () => this.fluid.quantity,
+            set: (value) => { this.fluid.quantity = value; }
+        });
         this.currentFill = 0;
         this.nextFill = 0;
 
         this.flowLevel = Infinity;
-        this.fluidType = null;
         this.thresholdFluidTypeReset = 0.0001; // Threshold for resetting fluid type when currentFill is low
 
         this.isSource = false;
@@ -63,8 +72,9 @@ class Pipe extends GameObject{
         this.isSource = false;
 
         if (this.currentFill <= this.thresholdFluidTypeReset) {
-            this.fluidType = null;
             this.currentFill = 0;
+            this.fluidType = "empty";
+            this.hasFluid = false;
         }
 
         this.joinDirections.up = map.get(this.x, this.y - 1) instanceof GameObject &&

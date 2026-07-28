@@ -5,7 +5,7 @@ const FLUID_TYPES = {
     "oil": {
         color: "rgba(139, 69, 19, 0.4)"
     },
-    null: {
+    "empty": {
         color: "rgb(0, 0, 0)"
     }
 }
