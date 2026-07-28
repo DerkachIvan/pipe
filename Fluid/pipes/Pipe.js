@@ -64,6 +64,7 @@ class Pipe extends GameObject{
 
         if (this.currentFill <= this.thresholdFluidTypeReset) {
             this.fluidType = null;
+            this.currentFill = 0;
         }
 
         this.joinDirections.up = map.get(this.x, this.y - 1) instanceof GameObject &&
@@ -151,7 +152,7 @@ class Pipe extends GameObject{
         ctx.font = "bold 12px Arial";
         ctx.fillText(`Pipe`, this.rightBound + 5, this.topBound+10);
         ctx.fillText(`Fill ${this.fluidType}: ${this.currentFill.toFixed(2)} / ${this.capacity}`, this.rightBound + 5, this.topBound + 25);
-        
+
         ctx.fillStyle = FLUID_TYPES[this.fluidType].color;
         ctx.fillRect(this.rightBound + 5, this.topBound + 30, lerpNumber(0, 100, this.currentFill / this.capacity), 5);
         ctx.strokeStyle = "black";

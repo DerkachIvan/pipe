@@ -34,6 +34,7 @@ function LoadObjectsSprites() {
     Pipe.loadSprites();
     Pump.loadSprites();
     FluidGenerator.loadSprites();
+    FluidCompressor.loadSprites();
     Drain.loadSprites();
 }
 
@@ -145,6 +146,10 @@ document.addEventListener("keydown", function(e) {
     if (e.key === "4"){
         let newPump = new Pump(ctx, gridPos.x, gridPos.y, "down");
         map.set(gridPos.x, gridPos.y, newPump);
+    }
+    if (e.key === "5"){
+        let newFluidCompressor = new FluidCompressor(ctx, gridPos.x, gridPos.y);
+        map.set(gridPos.x, gridPos.y, newFluidCompressor);
     }
     if (e.key === "Delete"){
         map.deleteGameObject(gridPos.x, gridPos.y);
