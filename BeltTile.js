@@ -83,15 +83,57 @@ class BeltTile extends GameObject{
     
         let nextFree = this.nextBeltTile && !this.nextBeltTile.item;
         
+        if (this.item) {
+            if (this.progress < 1) {
+                this.progress += this.speed * deltaTime;
+                if (this.progress > 1) {
+                    this.progress = 1;
+                }
+            }
 
-        if(this.item && this.progress < 1){
-            this.progress += this.speed * deltaTime;
+            if (this.progress >= 1) {
+                this.attemptTransfer(new Set());
+            }
         }
-        if(this.progress > 1 && this.nextBeltTile?.TryInsert(this.item, this)){
-            this.progress = 0;
+    }
+    
+    attemptTransfer(visited) {
+        if (!this.item || this.progress < 1) {
+            return false;
+        }
 
+        if (!this.nextBeltTile) {
+            return false;
+        }
+
+        if (visited.has(this)) {
+            return false;
+        }
+
+        visited.add(this);
+
+        if (!this.nextBeltTile.item) {
+            this.nextBeltTile.item = this.item;
+            this.nextBeltTile.progress = 0;
             this.item = null;
+            this.progress = 0;
+            visited.delete(this);
+            return true;
         }
+
+        if (this.nextBeltTile.attemptTransfer(visited)) {
+            if (this.item) {
+                this.nextBeltTile.item = this.item;
+                this.nextBeltTile.progress = 0;
+                this.item = null;
+                this.progress = 0;
+            }
+            visited.delete(this);
+            return true;
+        }
+
+        visited.delete(this);
+        return false;
     }
     
     static loadSprites() {
@@ -156,19 +198,8 @@ class BeltTile extends GameObject{
         if(this.item)
             return false;
 
-        let dx = from.x - this.x;
-        let dy = from.y - this.y;
-
-        if(this.dirs[this.direction].input.x != dx ||
-            this.dirs[this.direction].input.y != dy
-        )
-        this.progress = 0.5
-
-        //console.log(`dx: ${dx}, dy: ${dy}`)
-
-
         this.item = item;
-
+        this.progress = 0;
         return true;
     }
 
