@@ -36,6 +36,7 @@ function LoadObjectsSprites() {
     FluidGenerator.loadSprites();
     FluidCompressor.loadSprites();
     Drain.loadSprites();
+    BeltTile.loadSprites();
 }
 
 function Start(){
@@ -150,6 +151,15 @@ document.addEventListener("keydown", function(e) {
     if (e.key === "5"){
         let newFluidCompressor = new FluidCompressor(ctx, gridPos.x, gridPos.y);
         map.set(gridPos.x, gridPos.y, newFluidCompressor);
+    }
+    if (e.key.toLowerCase() === "v"){
+        let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y);
+        newBeltTitle.hesItem = true;
+        map.set(gridPos.x, gridPos.y, newBeltTitle);
+    }
+    if (e.key.toLowerCase() === "b"){
+        let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y);
+        map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key === "Delete"){
         map.deleteGameObject(gridPos.x, gridPos.y);

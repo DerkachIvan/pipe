@@ -56,6 +56,10 @@ class GameObject {
 
     }
 
+    DrawInfo(ctx) {
+        
+    }
+
     getNeighbors(){
         const dirs = [
             {x: 0, y: -1},

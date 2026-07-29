@@ -75,6 +75,7 @@ class Map {
     Update(){
         let fluidMashine = [];
         let pipes = [];
+        let belts = [];
         
         // Single pass to categorize objects
         for (let obj of this.objects) {
@@ -82,6 +83,9 @@ class Map {
                 fluidMashine.push(obj);
             } else if (obj instanceof Pipe) {
                 pipes.push(obj);
+            }
+            else if (obj.CheckTag("BeltTile")) {
+                belts.push(obj);
             }
         }
         
@@ -92,6 +96,10 @@ class Map {
         
         // Then update fluidMashine
         for (let obj of fluidMashine) {
+            obj.Update();
+        }
+
+        for (let obj of belts) {
             obj.Update();
         }
     }
