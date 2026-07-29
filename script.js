@@ -154,7 +154,7 @@ document.addEventListener("keydown", function(e) {
     }
     if (e.key.toLowerCase() === "v"){
         let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y);
-        newBeltTitle.hesItem = true;
+        newBeltTitle.item = new BeltItem(0, 0);
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "b"){

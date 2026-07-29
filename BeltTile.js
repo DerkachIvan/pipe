@@ -11,7 +11,7 @@ class BeltTile extends GameObject{
         this.nextBeltTile;
         this.previousBeltTile;
 
-        this.hesItem = false;
+        this.item = null;
         this.progress = 0;
         this.itemStartPoint = {x: 0, y: 0};
         this.itemEndPoint = {x: 0, y: 0};
@@ -24,36 +24,36 @@ class BeltTile extends GameObject{
         "right": {x: 1, y: 0},
     };
 
-    itemSize = 10;
     Update(){
+        if(this.item){
 
-        
-        if(this.direction === "up"){
-            this.itemStartPoint.x = this.leftBound + this.cellSize/2 - this.itemSize/2;
-            this.itemStartPoint.y = this.bottomBound - this.itemSize;
-
-            this.itemEndPoint.x = this.leftBound + this.cellSize/2 - this.itemSize/2;
-            this.itemEndPoint.y = this.topBound;
-        }else if(this.direction === "down"){
-            this.itemStartPoint.x = this.leftBound + this.cellSize/2 - this.itemSize/2;
-            this.itemStartPoint.y = this.topBound;
-
-            this.itemEndPoint.x = this.leftBound + this.cellSize/2 - this.itemSize/2;
-            this.itemEndPoint.y = this.bottomBound - this.itemSize;
-        }else if(this.direction === "left"){
-            this.itemStartPoint.x = this.rightBound - this.itemSize;
-            this.itemStartPoint.y = this.topBound + this.cellSize/2 - this.itemSize/2;
-
-            this.itemEndPoint.x = this.leftBound;
-            this.itemEndPoint.y = this.topBound + this.cellSize/2 - this.itemSize/2;
-        }else if(this.direction === "right"){
-            this.itemStartPoint.x = this.leftBound;
-            this.itemStartPoint.y = this.topBound + this.cellSize/2 - this.itemSize/2;
-
-            this.itemEndPoint.x = this.rightBound - this.itemSize;
-            this.itemEndPoint.y = this.topBound + this.cellSize/2 - this.itemSize/2;
+            if(this.direction === "up"){
+                this.itemStartPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
+                this.itemStartPoint.y = this.bottomBound + this.item.size / 2;
+                
+                this.itemEndPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
+                this.itemEndPoint.y = this.topBound - this.item.size/2;
+            }else if(this.direction === "down"){
+                this.itemStartPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
+                this.itemStartPoint.y = this.topBound - this.item.size/2;
+                
+                this.itemEndPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
+                this.itemEndPoint.y = this.bottomBound + this.item.size/2;
+            }else if(this.direction === "left"){
+                this.itemStartPoint.x = this.rightBound - this.item.size/2;
+                this.itemStartPoint.y = this.topBound + this.cellSize/2 - this.item.size/2;
+                
+                this.itemEndPoint.x = this.leftBound - this.item.size/2;
+                this.itemEndPoint.y = this.topBound + this.cellSize/2 - this.item.size/2;
+            }else if(this.direction === "right"){
+                this.itemStartPoint.x = this.leftBound - this.item.size/2;
+                this.itemStartPoint.y = this.topBound + this.cellSize/2 - this.item.size/2;
+                
+                this.itemEndPoint.x = this.rightBound - this.item.size/2;
+                this.itemEndPoint.y = this.topBound + this.cellSize/2 - this.item.size/2;
+            }
         }
-
+            
 
         if (this.direction === "up") {
             let nextObj = map.get(this.x, this.y-1);
@@ -100,17 +100,17 @@ class BeltTile extends GameObject{
             }
         }
     
-        let nextFree = this.nextBeltTile && !this.nextBeltTile.hesItem;
+        let nextFree = this.nextBeltTile && !this.nextBeltTile.item;
         
 
-        if(this.hesItem && this.progress < 1){
+        if(this.item && this.progress < 1){
             this.progress += this.speed * deltaTime;
         }
         if(this.progress > 1 && nextFree){
             this.progress = 0;
-            this.hesItem = false;
 
-            this.nextBeltTile.hesItem = true;
+            this.nextBeltTile.item = this.item;
+            this.item = null;
         }
     }
     
@@ -146,13 +146,15 @@ class BeltTile extends GameObject{
             this.ctx.drawImage(sprite, this.leftBound, this.topBound, this.cellSize, this.cellSize);
         }
 
-        if(this.hesItem){
-            this.ctx.fillStyle = "#0f0";
+        if(this.item){
+            /*this.ctx.fillStyle = "#0f0";
 
+            
+            this.ctx.fillRect(itemX, itemY, this.itemSize, this.itemSize)*/
+            
             let itemX = lerpNumber(this.itemStartPoint.x, this.itemEndPoint.x, this.progress) 
             let itemY = lerpNumber(this.itemStartPoint.y, this.itemEndPoint.y, this.progress) 
-            
-            this.ctx.fillRect(itemX, itemY, this.itemSize, this.itemSize)
+            map.addBeltItem(new BeltItem(itemX, itemY));
         }
 
         this.ctx.restore();

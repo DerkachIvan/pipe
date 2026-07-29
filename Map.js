@@ -9,6 +9,9 @@ class Map {
         this.objects = [];
         this.FluidMashines = [];
         this.Pipes = [];
+
+        this.beltItems = [];
+
         this.lastObjectID = 0;
 
         for (let i = 0; i < width; i++) {
@@ -17,6 +20,10 @@ class Map {
                 this.grid[i][j] = 0;
             }
         }
+    }
+
+    addBeltItem(item){
+        this.beltItems.push(item);
     }
 
     set(x, y, object) {
@@ -117,6 +124,11 @@ class Map {
                     this.grid[i][j].Draw();
                 }
             }
+        }
+
+        for (let i = 0; i < this.beltItems.length; i++){
+            let item = this.beltItems.pop();
+            item.Draw();
         }
 
     }
