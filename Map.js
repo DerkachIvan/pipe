@@ -9,8 +9,7 @@ class Map {
         this.objects = [];
         this.FluidMashines = [];
         this.Pipes = [];
-
-        this.beltItems = [];
+        this.Belts = [];
 
         this.lastObjectID = 0;
 
@@ -20,10 +19,6 @@ class Map {
                 this.grid[i][j] = 0;
             }
         }
-    }
-
-    addBeltItem(item){
-        this.beltItems.push(item);
     }
 
     set(x, y, object) {
@@ -45,6 +40,9 @@ class Map {
         }
         if(object.CheckTag("Pipe")){
             this.Pipes.push(object);
+        }
+        if(object.CheckTag("BeltTile")){
+            this.Belts.push(object);
         }
     }
 
@@ -126,9 +124,9 @@ class Map {
             }
         }
 
-        for (let i = 0; i < this.beltItems.length; i++){
-            let item = this.beltItems.pop();
-            item.Draw();
+        for (let i = 0; i < this.Belts.length; i++){
+            let belt = this.Belts[i];
+            belt.DrawItem();
         }
 
     }

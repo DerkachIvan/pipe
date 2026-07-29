@@ -18,18 +18,29 @@ class BeltTile extends GameObject{
     }
     
     dirs = {
-        "up": {x: 0, y: -1},
-        "down": {x: 0, y: 1},
-        "left": {x: -1, y: 0},
-        "right": {x: 1, y: 0},
+        "up": {
+            input: {x: 0, y: 1},
+            output: {x: 0, y: -1}
+        },
+        "down": {
+            input: {x: 0, y: -1},
+            output: {x: 0, y: 1}
+        },
+        "left": {
+            input: {x: 1, y: 0},
+            output: {x: -1, y: 0}
+        },
+        "right": {
+            input: {x: -1, y: 0},
+            output: {x: 1, y: 0}
+        },
     };
 
     Update(){
         if(this.item){
-
             if(this.direction === "up"){
                 this.itemStartPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
-                this.itemStartPoint.y = this.bottomBound + this.item.size / 2;
+                this.itemStartPoint.y = this.bottomBound - this.item.size / 2;
                 
                 this.itemEndPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
                 this.itemEndPoint.y = this.topBound - this.item.size/2;
@@ -38,7 +49,7 @@ class BeltTile extends GameObject{
                 this.itemStartPoint.y = this.topBound - this.item.size/2;
                 
                 this.itemEndPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
-                this.itemEndPoint.y = this.bottomBound + this.item.size/2;
+                this.itemEndPoint.y = this.bottomBound - this.item.size/2;
             }else if(this.direction === "left"){
                 this.itemStartPoint.x = this.rightBound - this.item.size/2;
                 this.itemStartPoint.y = this.topBound + this.cellSize/2 - this.item.size/2;
@@ -54,50 +65,16 @@ class BeltTile extends GameObject{
             }
         }
             
+        let nextDir = this.dirs[this.direction].output
+        let nextObj = map.get(this.x + nextDir.x, this.y + nextDir.y);
+        if(nextObj instanceof BeltTile){
+                this.nextBeltTile = nextObj;
+        }
 
-        if (this.direction === "up") {
-            let nextObj = map.get(this.x, this.y-1);
-            if(nextObj instanceof BeltTile){
-                this.nextBeltTile = nextObj;
-            }
-
-            let previousObj = map.get(this.x, this.y+1);
-            if(previousObj instanceof BeltTile){
+        let previousDir = this.dirs[this.direction].input
+        let previousObj = map.get(this.x + previousDir.x, this.y + previousDir.y);
+        if(previousObj instanceof BeltTile){
                 this.previousBeltTile = previousObj;
-            }
-        }
-        if (this.direction === "down") {
-            let nextObj = map.get(this.x, this.y+1);
-            if(nextObj instanceof BeltTile){
-                this.nextBeltTile = nextObj;
-            }
-    
-            let previousObj = map.get(this.x, this.y-1);
-            if(previousObj instanceof BeltTile){
-                this.previousBeltTile = previousObj;
-            }
-        }
-        if (this.direction === "left") {
-            let nextObj = map.get(this.x-1, this.y);
-            if(nextObj instanceof BeltTile){
-                this.nextBeltTile = nextObj;
-            }
-    
-            let previousObj = map.get(this.x+1, this.y);
-            if(previousObj instanceof BeltTile){
-                this.previousBeltTile = previousObj;
-            }
-        }
-        if (this.direction === "right") {
-            let nextObj = map.get(this.x+1, this.y);
-            if(nextObj instanceof BeltTile){
-                this.nextBeltTile = nextObj;
-            }
-        
-            let previousObj = map.get(this.x-1, this.y);
-            if(previousObj instanceof BeltTile){
-                this.previousBeltTile = previousObj;
-            }
         }
     
         let nextFree = this.nextBeltTile && !this.nextBeltTile.item;
@@ -106,10 +83,9 @@ class BeltTile extends GameObject{
         if(this.item && this.progress < 1){
             this.progress += this.speed * deltaTime;
         }
-        if(this.progress > 1 && nextFree){
+        if(this.progress > 1 && this.nextBeltTile?.TryInsert(this.item, this)){
             this.progress = 0;
 
-            this.nextBeltTile.item = this.item;
             this.item = null;
         }
     }
@@ -154,10 +130,35 @@ class BeltTile extends GameObject{
             
             let itemX = lerpNumber(this.itemStartPoint.x, this.itemEndPoint.x, this.progress) 
             let itemY = lerpNumber(this.itemStartPoint.y, this.itemEndPoint.y, this.progress) 
-            map.addBeltItem(new BeltItem(itemX, itemY));
+            this.item.x = itemX;
+            this.item.y = itemY;
         }
 
         this.ctx.restore();
+    }
+
+    DrawItem(){
+        this.item?.Draw();
+    }
+
+    TryInsert(item, from)
+    {
+        let dx = from.x - this.x;
+        let dy = from.y - this.y;
+
+        if(this.dirs[this.direction].input.x != dx ||
+            this.dirs[this.direction].input.y != dy
+        )
+        this.progress = 0.5
+
+        console.log(`dx: ${dx}, dy: ${dy}`)
+
+        if(this.item)
+            return false;
+
+        this.item = item;
+
+        return true;
     }
 
     Rotate(){

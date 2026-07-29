@@ -30,6 +30,8 @@ var map
 var selectedObject = null;
 var pipeSystem;
 
+var rotDir = "up";
+
 function LoadObjectsSprites() {
     Pipe.loadSprites();
     Pump.loadSprites();
@@ -145,20 +147,25 @@ document.addEventListener("keydown", function(e) {
         map.set(gridPos.x, gridPos.y, newPipe);
     }
     if (e.key === "4"){
-        let newPump = new Pump(ctx, gridPos.x, gridPos.y, "down");
+        let newPump = new Pump(ctx, gridPos.x, gridPos.y, rotDir);
         map.set(gridPos.x, gridPos.y, newPump);
     }
     if (e.key === "5"){
         let newFluidCompressor = new FluidCompressor(ctx, gridPos.x, gridPos.y);
         map.set(gridPos.x, gridPos.y, newFluidCompressor);
     }
+    if (e.key.toLowerCase() === "c"){
+        let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
+        newBeltTitle.item = new BeltItem(0, 0, 10,"#f00");
+        map.set(gridPos.x, gridPos.y, newBeltTitle);
+    }
     if (e.key.toLowerCase() === "v"){
-        let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y);
-        newBeltTitle.item = new BeltItem(0, 0);
+        let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
+        newBeltTitle.item = new BeltItem(0, 0, 15, "rgb(0, 89, 255)");
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "b"){
-        let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y);
+        let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key === "Delete"){
@@ -168,6 +175,11 @@ document.addEventListener("keydown", function(e) {
         let obj = map.get(gridPos.x, gridPos.y);
         if (obj instanceof GameObject){
             obj.Rotate();
+        }else{
+            if (rotDir === "up") rotDir = "right";
+            else if (rotDir === "right") rotDir = "down";
+            else if (rotDir === "down") rotDir = "left";
+            else if (rotDir === "left") rotDir = "up";
         }
     }
     if (e.key.toLowerCase() === "d"){

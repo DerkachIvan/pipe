@@ -1,14 +1,15 @@
 class BeltItem{
-    constructor(x, y){
+    constructor(x, y, size = 10, color = "#0f0"){
         this.x = x;
         this.y = y;
-        this.size = 10;
+        this.size = size;
+        this.color = color;
     }
 
     Draw(){
         ctx.save();
         
-        ctx.fillStyle = "#0f0";
+        ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.size, this.size)
         
         ctx.restore();
