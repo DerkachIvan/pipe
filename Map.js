@@ -56,11 +56,21 @@ class Map {
         return this.objects.filter(obj => obj.CheckTag(tag));
     }
 
+    removeFromArray(array, object) {
+        const index = array.indexOf(object);
+        if (index !== -1) {
+            array.splice(index, 1);
+        }
+    }
+
     deleteGameObject(x, y) {
         if (this.outOfBounds(x, y)) return;
         let object = this.grid[x][y];
         if (object) {
             this.objects.splice(this.objects.indexOf(object), 1);
+            this.removeFromArray(this.FluidMashines, object);
+            this.removeFromArray(this.Pipes, object);
+            this.removeFromArray(this.Belts, object);
         }
         this.grid[x][y] = 0;
     }

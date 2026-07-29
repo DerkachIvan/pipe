@@ -1,7 +1,7 @@
 class BeltTile extends GameObject{
     static sprites = {};
 
-    constructor(ctx, x, y, direction="left", speed=1){
+    constructor(ctx, x, y, direction="left", speed=10){
         super(ctx, x, y);
         this.SetTag("BeltTile");
 
@@ -39,29 +39,29 @@ class BeltTile extends GameObject{
     Update(){
         if(this.item){
             if(this.direction === "up"){
-                this.itemStartPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
-                this.itemStartPoint.y = this.bottomBound - this.item.size / 2;
+                this.itemStartPoint.x = this.leftBound + this.cellSize/2;
+                this.itemStartPoint.y = this.bottomBound;
                 
-                this.itemEndPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
-                this.itemEndPoint.y = this.topBound - this.item.size/2;
+                this.itemEndPoint.x = this.leftBound + this.cellSize/2;
+                this.itemEndPoint.y = this.topBound;
             }else if(this.direction === "down"){
-                this.itemStartPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
-                this.itemStartPoint.y = this.topBound - this.item.size/2;
+                this.itemStartPoint.x = this.leftBound + this.cellSize/2;
+                this.itemStartPoint.y = this.topBound;
                 
-                this.itemEndPoint.x = this.leftBound + this.cellSize/2 - this.item.size/2;
-                this.itemEndPoint.y = this.bottomBound - this.item.size/2;
+                this.itemEndPoint.x = this.leftBound + this.cellSize/2;
+                this.itemEndPoint.y = this.bottomBound;
             }else if(this.direction === "left"){
-                this.itemStartPoint.x = this.rightBound - this.item.size/2;
-                this.itemStartPoint.y = this.topBound + this.cellSize/2 - this.item.size/2;
+                this.itemStartPoint.x = this.rightBound;
+                this.itemStartPoint.y = this.topBound + this.cellSize/2;
                 
-                this.itemEndPoint.x = this.leftBound - this.item.size/2;
-                this.itemEndPoint.y = this.topBound + this.cellSize/2 - this.item.size/2;
+                this.itemEndPoint.x = this.leftBound;
+                this.itemEndPoint.y = this.topBound + this.cellSize/2;
             }else if(this.direction === "right"){
-                this.itemStartPoint.x = this.leftBound - this.item.size/2;
-                this.itemStartPoint.y = this.topBound + this.cellSize/2 - this.item.size/2;
+                this.itemStartPoint.x = this.leftBound;
+                this.itemStartPoint.y = this.topBound + this.cellSize/2;
                 
-                this.itemEndPoint.x = this.rightBound - this.item.size/2;
-                this.itemEndPoint.y = this.topBound + this.cellSize/2 - this.item.size/2;
+                this.itemEndPoint.x = this.rightBound;
+                this.itemEndPoint.y = this.topBound + this.cellSize/2;
             }
         }
             
@@ -69,12 +69,16 @@ class BeltTile extends GameObject{
         let nextObj = map.get(this.x + nextDir.x, this.y + nextDir.y);
         if(nextObj instanceof BeltTile){
                 this.nextBeltTile = nextObj;
+        } else{
+            this.nextBeltTile = null
         }
 
         let previousDir = this.dirs[this.direction].input
         let previousObj = map.get(this.x + previousDir.x, this.y + previousDir.y);
         if(previousObj instanceof BeltTile){
                 this.previousBeltTile = previousObj;
+        } else{
+            this.previousBeltTile = null;
         }
     
         let nextFree = this.nextBeltTile && !this.nextBeltTile.item;
@@ -134,6 +138,12 @@ class BeltTile extends GameObject{
             this.item.y = itemY;
         }
 
+        if(DEBUG){
+            this.ctx.fillStyle = "#00c3ff";
+            this.ctx.fillRect(this.itemStartPoint.x, this.itemStartPoint.y, 10, 10);
+
+        }
+
         this.ctx.restore();
     }
 
@@ -143,6 +153,9 @@ class BeltTile extends GameObject{
 
     TryInsert(item, from)
     {
+        if(this.item)
+            return false;
+
         let dx = from.x - this.x;
         let dy = from.y - this.y;
 
@@ -151,10 +164,8 @@ class BeltTile extends GameObject{
         )
         this.progress = 0.5
 
-        console.log(`dx: ${dx}, dy: ${dy}`)
+        //console.log(`dx: ${dx}, dy: ${dy}`)
 
-        if(this.item)
-            return false;
 
         this.item = item;
 

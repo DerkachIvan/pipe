@@ -10,7 +10,7 @@ class BeltItem{
         ctx.save();
         
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.size, this.size)
+        ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size)
         
         ctx.restore();
     }
