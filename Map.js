@@ -27,9 +27,26 @@ class Map {
         this.drawStaticGrid();
     }
 
+    canPlace(object) {
+        for (let dx = 0; dx < object.size.width; dx++){
+            for (let dy = 0; dy < object.size.height; dy++){
+                if(this.outOfBounds(object.x + dx, object.y + dy)){
+                    return false;
+                }
+
+                if(this.grid[object.x + dx][object.y + dy] != null){
+                    return false;
+                }
+            }   
+        }
+
+        return true;
+    }
+
     set(x, y, object) {
         if (this.outOfBounds(x, y)) return;
         if (this.grid[x][y] instanceof GameObject) return;
+
         object.ID = this.lastObjectID++;
         object.x = x;
         object.y = y;
@@ -38,6 +55,7 @@ class Map {
         object.rightBound = (x + 1) * this.cellSize;
         object.topBound = y * this.cellSize;
         object.bottomBound = (y + 1) * this.cellSize;
+
         this.grid[x][y] = object;
         this.objects.push(object);
 
@@ -104,7 +122,7 @@ class Map {
             this.removeFromArray(this.FluidMashines, object);
             this.removeFromArray(this.Pipes, object);
             this.removeFromArray(this.Belts, object);
-            this.grid[x][y] = 0;
+            this.grid[x][y] = null;
             object.Delete();
         }
     }

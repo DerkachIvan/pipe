@@ -1,11 +1,11 @@
 class GameObject {
     static SELECTED_OBJECT = null;
-    texture = null;
     cellSize = 30;
     selected = false;
     tag = ["GameObject"];
     ID = -1;
     selected = false;
+    size = {width: 1, height: 1}
     constructor(ctx, x, y) {
         this.ctx = ctx;
         this.x = x;
@@ -49,7 +49,7 @@ class GameObject {
     }
 
     Delete(){
-        
+
     }
 
     Draw() {
