@@ -1,12 +1,12 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
-MX = 30
-MY = 30
+MX = 64
+MY = 33
 cellSize = 30
 
-canvas.width = MX * cellSize;
-canvas.height = MY * cellSize;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 const width = canvas.width;
 const height = canvas.height;
 
@@ -31,6 +31,12 @@ var selectedObject = null;
 var pipeSystem;
 
 var rotDir = "up";
+
+var dragging = false;
+var lastX = 0, lastY = 0;
+var camera = new Camera();
+
+
 
 function LoadObjectsSprites() {
     Pipe.loadSprites();
@@ -58,28 +64,7 @@ function Start(){
     pipeSystem = new PipeSystem(map);
 
     map.Start();
-    setInterval(Update, 1000 / 140); // 140 FPS
-}
-
-function Update() {
-    totalFill = 0;
-    calcTime();
-    ctx.clearRect(0, 0, width, height);
-
-    map.Update();
-    pipeSystem.Update();
-    map.Draw();
-    GameObject.DrawSelectedObjectInfo(ctx);
-
-    //draw FPS
-    ctx.save();
-    ctx.fillStyle = "black";
-    ctx.font = "bold 12px Arial";
-    if (DEBUG) {
-        ctx.fillText(`FPS: ${fps}`, 10, 20);
-        ctx.fillText(`Time: ${time.toFixed(2)}s`, 10, 40);
-    }
-    ctx.restore();
+    requestAnimationFrame(Update);
 }
 
 function calcTime(){
@@ -96,9 +81,41 @@ function calcTime(){
     }
 }
 
+function Update() {
+    calcTime();
+    ctx.clearRect(0, 0, width, height);
+    camera.Begin(ctx);
+    
+    map.Update();
+    pipeSystem.Update();
+    map.Draw();
+    GameObject.DrawSelectedObjectInfo(ctx);
+    camera.End(ctx);
+
+
+    //draw FPS
+    ctx.save();
+    ctx.fillStyle = "black";
+    ctx.font = "bold 12px Arial";
+    if (DEBUG) {
+        ctx.fillText(`FPS: ${fps}`, 10, 20);
+        ctx.fillText(`Time: ${time.toFixed(2)}s`, 10, 40);
+    }
+    ctx.restore();
+
+    requestAnimationFrame(Update);
+}
+
+function ScreenToWorld(x, y) {
+    return{
+        x: x / camera.zoom + camera.x,
+        y: y / camera.zoom + camera.y
+    }
+}
+
 function positionToGrid(x, y) {
-    x = Math.floor(x / (width / MX));
-    y = Math.floor(y / (height / MY));
+    x = Math.floor(x / map.cellSize);
+    y = Math.floor(y / map.cellSize);
     return {x: x, y: y};
 }
 
@@ -106,6 +123,15 @@ canvas.addEventListener("mousemove", function(e) {
     const rect = canvas.getBoundingClientRect();
     mouseX = e.clientX - rect.left;
     mouseY = e.clientY - rect.top;
+
+    if(dragging){
+        camera.x -= (e.clientX - lastX) / camera.zoom;
+        camera.y -= (e.clientY - lastY) / camera.zoom;
+    
+        lastX = e.clientX;
+        lastY = e.clientY;
+    }
+
 });
 
 canvas.addEventListener("contextmenu", function(e) {
@@ -113,15 +139,20 @@ canvas.addEventListener("contextmenu", function(e) {
 });
 
 canvas.addEventListener("mousedown", function(e) {
-    var gridPos = positionToGrid(mouseX, mouseY);
+    var worldPos = ScreenToWorld(mouseX, mouseY);
+    var gridPos = positionToGrid(worldPos.x, worldPos.y);
+
     if (e.button === 0) {
         console.log("Левая кнопка: ", gridPos);
         if (GameObject.SELECTED_OBJECT) {
             GameObject.SELECTED_OBJECT.selected = false;
         }
         GameObject.SELECTED_OBJECT = map.get(gridPos.x, gridPos.y);
-            
-
+    }
+    else if(e.button === 1) {
+        dragging = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
     } else if (e.button === 2) {
         console.log("ПКМ нажата на: ", gridPos);
         let obj = new Pipe(ctx, gridPos.x, gridPos.y);
@@ -129,9 +160,51 @@ canvas.addEventListener("mousedown", function(e) {
     }
 });
 
+canvas.addEventListener("mouseup", function(e){
+    if (e.button === 1) {
+        dragging = false;
+    }
+});
+
+canvas.addEventListener("wheel", function(e){
+    e.preventDefault();
+    
+    const worldPosBeforeZoom = ScreenToWorld(mouseX, mouseY);
+
+    if(e.deltaY < 0){
+        camera.zoom *= 1.1;
+    } else {
+        camera.zoom /= 1.1;
+    }
+
+    const afterZoomWorldPos = ScreenToWorld(mouseX, mouseY);
+    camera.x += worldPosBeforeZoom.x - afterZoomWorldPos.x;
+    camera.y += worldPosBeforeZoom.y - afterZoomWorldPos.y;
+});
+
 document.addEventListener("keydown", function(e) {
-    var gridPos = positionToGrid(mouseX, mouseY);
+    var worldPos = ScreenToWorld(mouseX, mouseY);
+    var gridPos = positionToGrid(worldPos.x, worldPos.y);
+
     console.log("Нажата клавиша: ", e.key, " на клетке: ", gridPos);
+
+    var rawCameraSpeed = 20; // Base speed
+    var cameraSpeed = rawCameraSpeed / camera.zoom; // Adjust speed based on zoom
+    if (e.key.toLowerCase() === "a"){
+        camera.x -= cameraSpeed;
+    }
+    if (e.key.toLowerCase() === "d"){
+        camera.x += cameraSpeed;
+    }
+    if (e.key.toLowerCase() === "w"){
+        camera.y -= cameraSpeed;
+    }
+    if (e.key.toLowerCase() === "s"){
+        camera.y += cameraSpeed;
+    }
+
+
+
     if (e.key === "1"){
         let newFluidGenerator = new FluidGenerator(ctx, gridPos.x, gridPos.y);
         newFluidGenerator.fluidType = "oil"; // Set the fluid type to oil
@@ -182,7 +255,7 @@ document.addEventListener("keydown", function(e) {
             else if (rotDir === "left") rotDir = "up";
         }
     }
-    if (e.key.toLowerCase() === "d"){
+    if (e.key.toLowerCase() === "`"){
         DEBUG = !DEBUG;
     }
 });

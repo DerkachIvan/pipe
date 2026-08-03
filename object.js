@@ -48,6 +48,10 @@ class GameObject {
 
     }
 
+    Delete(){
+        
+    }
+
     Draw() {
 
     }

@@ -19,6 +19,12 @@ class Map {
                 this.grid[i][j] = 0;
             }
         }
+
+        this.gridCanvas = document.createElement("canvas");
+        this.gridCanvas.width = width * cellSize;
+        this.gridCanvas.height = height * cellSize;
+        this.gridCanvasCtx = this.gridCanvas.getContext("2d");
+        this.drawStaticGrid();
     }
 
     set(x, y, object) {
@@ -44,12 +50,39 @@ class Map {
         if(object.CheckTag("BeltTile")){
             this.Belts.push(object);
         }
+
+        if (typeof object.UpdateJoinDirections === "function") {
+            object.UpdateJoinDirections();
+        }
+
+        const dirs = [
+            {x: 0, y: -1},
+            {x: 0, y: 1},
+            {x: -1, y: 0},
+            {x: 1, y: 0},
+        ];
+
+        for (let d of dirs) {
+            const neighbor = this.get(x + d.x, y + d.y);
+            if (neighbor instanceof Pipe) {
+                neighbor.UpdateJoinDirections();
+            }
+        }
     }
 
     get(x, y) {
         if (this.outOfBounds(x, y)) return 0;
         
         return this.grid[x][y];
+    }
+
+    drawStaticGrid() {
+        this.gridCanvasCtx.strokeStyle = "lightgrey";
+        for (let i = 0; i < this.width; i++) {
+            for (let j = 0; j < this.height; j++) {
+                this.gridCanvasCtx.strokeRect(i * this.cellSize, j * this.cellSize, this.cellSize, this.cellSize);
+            }
+        }
     }
 
     getAllWithTag(tag){
@@ -71,8 +104,9 @@ class Map {
             this.removeFromArray(this.FluidMashines, object);
             this.removeFromArray(this.Pipes, object);
             this.removeFromArray(this.Belts, object);
+            this.grid[x][y] = 0;
+            object.Delete();
         }
-        this.grid[x][y] = 0;
     }
 
     outOfBounds(x, y) {
@@ -120,24 +154,15 @@ class Map {
     }
 
     Draw() {
-        //draw grid
-        for (let i = 0; i < this.width; i++) {
-            for (let j = 0; j < this.height; j++) {
-                this.ctx.save();
-                this.ctx.strokeStyle = "lightgrey";
-                this.ctx.strokeRect(i * this.cellSize, j * this.cellSize, this.cellSize, this.cellSize);
-                this.ctx.restore();
+        this.ctx.drawImage(this.gridCanvas, 0, 0);
 
-                if (this.grid[i][j] != 0) {
-                    this.grid[i][j].Draw();
-                }
-            }
+        for (let obj of this.objects) {
+            obj.Draw();
         }
 
         for (let i = 0; i < this.Belts.length; i++){
             let belt = this.Belts[i];
             belt.DrawItem();
         }
-
     }
 }

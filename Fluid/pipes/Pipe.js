@@ -67,6 +67,18 @@ class Pipe extends GameObject{
         return key;
     }
 
+    UpdateJoinDirections() {
+        const canConnect = (x, y) => {
+            const neighbor = map.get(x, y);
+            return neighbor instanceof GameObject && neighbor.CheckTag(["Pipe", "Pump", "FluidMashine"]);
+        };
+
+        this.joinDirections.up = canConnect(this.x, this.y - 1);
+        this.joinDirections.down = canConnect(this.x, this.y + 1);
+        this.joinDirections.left = canConnect(this.x - 1, this.y);
+        this.joinDirections.right = canConnect(this.x + 1, this.y);
+    }
+
     Update(){
         this.isOutput = false;
         this.isSource = false;
@@ -77,14 +89,13 @@ class Pipe extends GameObject{
             this.hasFluid = false;
         }
 
-        this.joinDirections.up = map.get(this.x, this.y - 1) instanceof GameObject &&
-            map.get(this.x, this.y - 1).CheckTag(["Pipe", "Pump", "FluidMashine"]);
-        this.joinDirections.down = map.get(this.x, this.y + 1) instanceof GameObject &&
-            map.get(this.x, this.y + 1).CheckTag(["Pipe", "Pump", "FluidMashine"]);
-        this.joinDirections.left = map.get(this.x - 1, this.y) instanceof GameObject &&
-            map.get(this.x - 1, this.y).CheckTag(["Pipe", "Pump", "FluidMashine"]);
-        this.joinDirections.right = map.get(this.x + 1, this.y) instanceof GameObject && 
-            map.get(this.x + 1, this.y).CheckTag(["Pipe", "Pump", "FluidMashine"]);
+        
+    }
+
+    Delete(){
+        this.getNeighborsPipes().forEach(neighbor => {
+            neighbor.UpdateJoinDirections();
+        })
     }
 
     Draw(){
