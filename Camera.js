@@ -3,7 +3,7 @@ class Camera {
         this.x = 0;
         this.y = 0;
 
-        this.zoom = 1;
+        this.zoom = 2;
     }
 
     Begin(ctx){

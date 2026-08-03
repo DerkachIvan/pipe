@@ -1,5 +1,10 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = false;
+ctx.webkitImageSmoothingEnabled = false;
+ctx.mozImageSmoothingEnabled = false;
+ctx.msImageSmoothingEnabled = false;
+
 
 MX = 64
 MY = 33
@@ -176,6 +181,8 @@ canvas.addEventListener("wheel", function(e){
     } else {
         camera.zoom /= 1.1;
     }
+
+    camera.zoom = clamp(camera.zoom, 0.8, 4)
 
     const afterZoomWorldPos = ScreenToWorld(mouseX, mouseY);
     camera.x += worldPosBeforeZoom.x - afterZoomWorldPos.x;
