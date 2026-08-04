@@ -68,14 +68,7 @@ class FluidCompressor extends FluidMachine {
             this.ctx.drawImage(sprite, this.leftBound, this.topBound, this.cellSize, this.cellSize);
         } 
 
-        if(this.isWork){
-            this.ctx.fillStyle = "rgb(12, 231, 30)"
-        }else{
-            this.ctx.fillStyle = "rgb(231, 45, 12)"
-        }
-
-        this.ctx.fillRect(this.leftBound + cellSize/2 - 5, this.topBound + cellSize/2 - 5, 10, 10)
- 
+        
         if(DEBUG) {
             let fillHeight = lerpNumber(0, this.cellSize, this.currentFill / this.capacity);
             this.ctx.fillStyle = FLUID_TYPES[this.fluidType].color;
@@ -85,6 +78,14 @@ class FluidCompressor extends FluidMachine {
                 this.cellSize, 
                 fillHeight
             );
+            
+            if(this.isWork){
+                this.ctx.fillStyle = "rgb(12, 231, 30)"
+            }else{
+                this.ctx.fillStyle = "rgb(231, 45, 12)"
+            }
+    
+            this.ctx.fillRect(this.leftBound + cellSize/2 - 5, this.topBound + cellSize/2 - 5, 10, 10)
         }
 
         this.ctx.restore();

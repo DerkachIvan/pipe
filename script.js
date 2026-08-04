@@ -44,12 +44,14 @@ var camera = new Camera();
 
 
 function LoadObjectsSprites() {
+    Item.loadSprites();
     Pipe.loadSprites();
     Pump.loadSprites();
     FluidGenerator.loadSprites();
     FluidCompressor.loadSprites();
     Drain.loadSprites();
     BeltTile.loadSprites();
+    Furnace.loadSprites();
 }
 
 function Start(){
@@ -234,14 +236,18 @@ document.addEventListener("keydown", function(e) {
         let newFluidCompressor = new FluidCompressor(ctx, gridPos.x, gridPos.y);
         map.set(gridPos.x, gridPos.y, newFluidCompressor);
     }
+    if (e.key.toLowerCase() === "f"){
+        let newFurnace = new Furnace(ctx, gridPos.x, gridPos.y);
+        map.set(gridPos.x, gridPos.y, newFurnace);
+    }
     if (e.key.toLowerCase() === "c"){
         let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
-        newBeltTitle.item = new BeltItem(0, 0, 10,"#f00");
+        newBeltTitle.item = new BeltItem(0, 0, 15, new Item());
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "v"){
         let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
-        newBeltTitle.item = new BeltItem(0, 0, 15, "rgb(0, 89, 255)");
+        newBeltTitle.item = new BeltItem(0, 0, 15, new Item("CompressedOil", "Solid"));
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "b"){

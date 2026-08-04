@@ -16,7 +16,7 @@ class Map {
         for (let i = 0; i < width; i++) {
             this.grid[i] = [];
             for (let j = 0; j < height; j++) {
-                this.grid[i][j] = 0;
+                this.grid[i][j] = null;
             }
         }
 
@@ -44,20 +44,26 @@ class Map {
     }
 
     set(x, y, object) {
-        if (this.outOfBounds(x, y)) return;
-        if (this.grid[x][y] instanceof GameObject) return;
-
-        object.ID = this.lastObjectID++;
         object.x = x;
         object.y = y;
+        if(!this.canPlace(object)){
+            console.log("Cannot place object at", x, y);
+            return;
+        }
+        
+        object.ID = this.lastObjectID++;
         object.cellSize = this.cellSize;
         object.leftBound = x * this.cellSize;
         object.rightBound = (x + 1) * this.cellSize;
         object.topBound = y * this.cellSize;
         object.bottomBound = (y + 1) * this.cellSize;
-
-        this.grid[x][y] = object;
         this.objects.push(object);
+        
+        for (let dx = 0; dx < object.size.width; dx++){
+            for (let dy = 0; dy < object.size.height; dy++){
+                this.grid[x+dx][y+dy] = object;
+            }
+        }
 
         if(object.CheckTag("FluidMashine")){
             this.FluidMashines.push(object);
@@ -118,11 +124,18 @@ class Map {
         if (this.outOfBounds(x, y)) return;
         let object = this.grid[x][y];
         if (object) {
+            for (let dx = 0; dx < object.size.width; dx++){
+                for (let dy = 0; dy < object.size.height; dy++){
+                    if (!this.outOfBounds(object.x + dx, object.y + dy) && this.grid[object.x + dx][object.y + dy] === object) {
+                        this.grid[object.x + dx][object.y + dy] = null;
+                    }
+                }
+            }
+
             this.objects.splice(this.objects.indexOf(object), 1);
             this.removeFromArray(this.FluidMashines, object);
             this.removeFromArray(this.Pipes, object);
             this.removeFromArray(this.Belts, object);
-            this.grid[x][y] = null;
             object.Delete();
         }
     }
