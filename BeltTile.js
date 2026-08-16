@@ -1,7 +1,7 @@
 class BeltTile extends GameObject{
     static sprites = {};
 
-    constructor(ctx, x, y, direction="left", speed=1){
+    constructor(ctx, x, y, direction="left", speed=3){
         super(ctx, x, y);
         this.SetTag("BeltTile");
 
@@ -203,7 +203,7 @@ class BeltTile extends GameObject{
         this.item?.Draw();
     }
 
-    TryInsert(item, from)
+    TryInsert(item)
     {
         if(this.item)
             return false;

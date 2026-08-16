@@ -9,7 +9,7 @@ class FluidCompressor extends FluidMachine {
         this.isWork = false;
 
         this.fluidType = "oil";
-        this.productType = "compressedOil";
+        this.productType = "CompressedOil";
         this.amountOfProduct = 0; // Amount of product produced by the compressor
 
         this.fluidTransferRate = 4; // Rate at which fluid is transferred to the compressor
@@ -31,15 +31,26 @@ class FluidCompressor extends FluidMachine {
 
     Update(){
         this.getNeighbors().forEach(neighbor => {
-            if (neighbor instanceof GameObject && neighbor.CheckTag("Pipe")) {
-                if (neighbor.fluidType === this.fluidType){
-                    let freeSpace = this.capacity - this.currentFill;
-                    let transferPerUpdate = this.amountFluidTransferPerSecond * this.fluidTransferRate * deltaTime;
-                    
-                    let amountToTransfer = Math.min(transferPerUpdate, neighbor.currentFill, freeSpace);
-                    
-                    neighbor.currentFill -= amountToTransfer;
-                    this.currentFill += amountToTransfer;
+            if (neighbor instanceof GameObject) {
+                if(neighbor.CheckTag("Pipe")){
+                    if (neighbor.fluidType === this.fluidType){
+                        let freeSpace = this.capacity - this.currentFill;
+                        let transferPerUpdate = this.amountFluidTransferPerSecond * this.fluidTransferRate * deltaTime;
+                        
+                        let amountToTransfer = Math.min(transferPerUpdate, neighbor.currentFill, freeSpace);
+                        
+                        neighbor.currentFill -= amountToTransfer;
+                        this.currentFill += amountToTransfer;
+                    }
+                }
+
+                if(neighbor.CheckTag("BeltTile")){
+                    if(this.amountOfProduct > 0){
+                        let productItem = new BeltItem(0, 0, 15, new Item(this.productType, "Solid"));
+                        if(neighbor.TryInsert(productItem)){
+                            this.amountOfProduct -= 1;
+                        }
+                    }
                 }
             }
         });
