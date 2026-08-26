@@ -6,10 +6,12 @@ class Furnace extends GameObject {
         this.SetTag("Furnace");
 
         this.size = {width: 2, height: 2}
+
+        this.inventory = new Inventory(5);
     }
 
     static loadSprites() {
-        const spriteName = "furnace"; // Assuming a single sprite for Furnace
+        const spriteName = "Furnace"; // Assuming a single sprite for Furnace
         let img = new Image();
         img.src = `Machine/Furnace/Sprites/${spriteName}.png`;
         Furnace.sprites[spriteName] = img;
@@ -17,7 +19,7 @@ class Furnace extends GameObject {
 
     Draw(){
         this.ctx.save();
-        let spriteKey = "furnace"; // Assuming a single sprite for Furnace
+        let spriteKey = "Furnace"; // Assuming a single sprite for Furnace
         let sprite = Furnace.sprites[spriteKey];
         if (sprite && sprite.complete) {
             this.ctx.drawImage(sprite, this.leftBound, this.topBound, this.cellSize * this.size.width, this.cellSize * this.size.height);

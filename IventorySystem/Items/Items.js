@@ -1,8 +1,9 @@
 class Item {
     static sprites = [];
-    constructor(name = "None", type = "None") {
+    constructor(name = "None", type = "None", maxStackSize = 100) {
         this.name = name;
         this.type = type;
+        this.maxStackSize = maxStackSize;
     }
 
     static loadSprites() {
@@ -12,7 +13,7 @@ class Item {
 
         for (let name of spriteNames){
             let img = new Image();
-            img.src = `Items/Sprites/${name}.png`;
+            img.src = `IventorySystem/Items/Sprites/${name}.png`;
             Item.sprites[name] = img;
         }
     }

@@ -247,7 +247,7 @@ document.addEventListener("keydown", function(e) {
     }
     if (e.key.toLowerCase() === "v"){
         let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
-        newBeltTitle.item = new BeltItem(0, 0, 15, new Item("CompressedOil", "Solid"));
+        newBeltTitle.item = new BeltItem(0, 0, 15, CompressedOil);
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "b"){

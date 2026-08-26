@@ -10,6 +10,7 @@ class FluidCompressor extends FluidMachine {
 
         this.fluidType = "oil";
         this.productType = "CompressedOil";
+        this.maxAmountOfProduct = 10; // Maximum amount of product that can be stored in the compressor
         this.amountOfProduct = 0; // Amount of product produced by the compressor
 
         this.fluidTransferRate = 4; // Rate at which fluid is transferred to the compressor
@@ -57,7 +58,7 @@ class FluidCompressor extends FluidMachine {
         
         this.isWork = this.workProgress > 0;
 
-        if(this.currentFill >= this.amountToCompress) {
+        if(this.currentFill >= this.amountToCompress && this.amountOfProduct < this.maxAmountOfProduct) {
             this.curentWorkTime += this.workRate * deltaTime;
             
             if(this.curentWorkTime >= this.timeForWork) {
