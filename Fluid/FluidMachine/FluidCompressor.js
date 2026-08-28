@@ -47,7 +47,7 @@ class FluidCompressor extends FluidMachine {
 
                 if(neighbor.CheckTag("BeltTile")){
                     if(this.amountOfProduct > 0){
-                        let productItem = new BeltItem(0, 0, 15, new Item(this.productType, "Solid"));
+                        let productItem = new BeltItem(0, 0, 15, CompressedOil);
                         if(neighbor.TryInsert(productItem)){
                             this.amountOfProduct -= 1;
                         }

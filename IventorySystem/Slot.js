@@ -5,6 +5,12 @@ class Slot {
         this.amount = 0;
     }
 
+    Draw(){
+        if(this.item !== null){
+            this.item.Draw();
+        }
+    }
+
     TryInsert(item, amount){
         if(this.constItem){
             if(this.item.name === item.name){

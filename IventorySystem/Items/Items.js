@@ -8,7 +8,11 @@ class Item {
 
     static loadSprites() {
         const spriteNames = [
-            "CompressedOil", "None"
+            "CompressedOil", 
+            "Coal",
+            "Copper",
+            "IronBar", 
+            "None"
         ];
 
         for (let name of spriteNames){

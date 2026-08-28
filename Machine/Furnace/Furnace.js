@@ -28,10 +28,16 @@ class Furnace extends GameObject {
     }
 
     DrawInfo(ctx) {
+
+        
         ctx.save();
         ctx.fillStyle = "lightgrey";
         ctx.fillRect(this.rightBound, this.topBound - 5, 110, 45);
         ctx.fillStyle = "black";
+        for(let slot of this.inventory.slots){
+            if(slot == null) continue
+            slot.item.Draw()
+        }
         ctx.font = "bold 12px Arial";
         ctx.fillText(`ID ${this.ID}`, this.rightBound + 5, this.topBound + 25);
         ctx.restore();
