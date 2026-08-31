@@ -1,9 +1,19 @@
 class Inventory {
+    slotSize = 20
     constructor(slotsAmount = 1){
         this.slotsAmount = slotsAmount;
         this.slots = [];
         for(let i = 0; i < slotsAmount; i++){
             this.slots.push(new Slot());
+        }
+    }
+
+    Draw(ctx, x, y){
+        for(let i = 0; i < this.slotsAmount; i++){
+            let slot = this.slots[i];
+            if(slot == null) continue
+            
+            slot.Draw(ctx, x + this.slotSize*i, y, this.slotSize)
         }
     }
 

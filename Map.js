@@ -10,6 +10,7 @@ class Map {
         this.FluidMashines = [];
         this.Pipes = [];
         this.Belts = [];
+        this.Others = [];
 
         this.lastObjectID = 0;
 
@@ -50,13 +51,13 @@ class Map {
             console.log("Cannot place object at", x, y);
             return;
         }
-        
+
         object.ID = this.lastObjectID++;
         object.cellSize = this.cellSize;
         object.leftBound = x * this.cellSize;
-        object.rightBound = (x + 1) * this.cellSize;
+        object.rightBound = (x + object.size.width) * this.cellSize;
         object.topBound = y * this.cellSize;
-        object.bottomBound = (y + 1) * this.cellSize;
+        object.bottomBound = (y + object.size.height) * this.cellSize;
         this.objects.push(object);
         
         for (let dx = 0; dx < object.size.width; dx++){
@@ -71,7 +72,7 @@ class Map {
         if(object.CheckTag("Pipe")){
             this.Pipes.push(object);
         }
-        if(object.CheckTag("BeltTile")){
+        if(object.CheckTag("BeltTile", "Loader")){
             this.Belts.push(object);
         }
 
@@ -156,6 +157,7 @@ class Map {
         let fluidMashine = [];
         let pipes = [];
         let belts = [];
+        let other = [];
         
         // Single pass to categorize objects
         for (let obj of this.objects) {
@@ -166,6 +168,8 @@ class Map {
             }
             else if (obj.CheckTag("BeltTile")) {
                 belts.push(obj);
+            }else {
+                other.push(obj);
             }
         }
         
@@ -182,6 +186,10 @@ class Map {
         for (let obj of belts) {
             obj.Update();
         }
+        
+        for (let obj of other) {
+            obj.Update();
+        }
     }
 
     Draw() {
@@ -193,6 +201,7 @@ class Map {
 
         for (let i = 0; i < this.Belts.length; i++){
             let belt = this.Belts[i];
+            if(!(belt instanceof BeltTile)) continue;
             belt.DrawItem();
         }
     }

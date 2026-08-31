@@ -1,4 +1,4 @@
-class BeltItem{
+/*class BeltItem{
     constructor(x, y, size = 10, item = null){
         this.x = x;
         this.y = y;
@@ -11,4 +11,4 @@ class BeltItem{
             this.item.Draw(this.x, this.y, this.size);
         }
     }
-}
+}*/

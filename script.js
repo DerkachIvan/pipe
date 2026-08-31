@@ -52,6 +52,8 @@ function LoadObjectsSprites() {
     Drain.loadSprites();
     BeltTile.loadSprites();
     Furnace.loadSprites();
+    Chest.loadSprites();
+    Loader.loadSprites();
 }
 
 function Start(){
@@ -240,19 +242,27 @@ document.addEventListener("keydown", function(e) {
         let newFurnace = new Furnace(ctx, gridPos.x, gridPos.y);
         map.set(gridPos.x, gridPos.y, newFurnace);
     }
+    if (e.key.toLowerCase() === "z"){
+        let newChest = new Chest(ctx, gridPos.x, gridPos.y);
+        map.set(gridPos.x, gridPos.y, newChest);
+    }
     if (e.key.toLowerCase() === "c"){
         let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
-        newBeltTitle.item = new BeltItem(0, 0, 15, new Item());
+        newBeltTitle.item = Coal;
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "v"){
         let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
-        newBeltTitle.item = new BeltItem(0, 0, 15, CompressedOil);
+        newBeltTitle.item = CompressedOil;
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "b"){
         let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
         map.set(gridPos.x, gridPos.y, newBeltTitle);
+    }
+    if (e.key.toLowerCase() === "l"){
+        let newLoader = new Loader(ctx, gridPos.x, gridPos.y, rotDir);
+        map.set(gridPos.x, gridPos.y, newLoader);
     }
     if (e.key === "Delete"){
         map.deleteGameObject(gridPos.x, gridPos.y);

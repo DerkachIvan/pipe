@@ -15,6 +15,8 @@ class BeltTile extends GameObject{
         this.progress = 0;
         this.itemStartPoint = {x: 0, y: 0};
         this.itemEndPoint = {x: 0, y: 0};
+        this.itemX
+        this.itemY
 
         this.setItemStartEndPoint();
     }
@@ -184,10 +186,8 @@ class BeltTile extends GameObject{
             
             this.ctx.fillRect(itemX, itemY, this.itemSize, this.itemSize)*/
             
-            let itemX = lerpNumber(this.itemStartPoint.x, this.itemEndPoint.x, this.progress) 
-            let itemY = lerpNumber(this.itemStartPoint.y, this.itemEndPoint.y, this.progress) 
-            this.item.x = itemX;
-            this.item.y = itemY;
+            this.itemX = lerpNumber(this.itemStartPoint.x, this.itemEndPoint.x, this.progress) 
+            this.itemY = lerpNumber(this.itemStartPoint.y, this.itemEndPoint.y, this.progress) 
         }
 
         if(DEBUG){
@@ -200,7 +200,8 @@ class BeltTile extends GameObject{
     }
 
     DrawItem(){
-        this.item?.Draw();
+        let size = 15
+        this.item?.Draw(this.itemX, this.itemY, size);
     }
 
     TryInsert(item)

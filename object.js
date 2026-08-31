@@ -6,14 +6,16 @@ class GameObject {
     ID = -1;
     selected = false;
     size = {width: 1, height: 1}
-    constructor(ctx, x, y) {
+    constructor(ctx, x, y, width = 1, height = 1) {
         this.ctx = ctx;
         this.x = x;
         this.y = y;
-        this.leftBound = x * this.cellSize;
-        this.rightBound = (x + 1) * this.cellSize;
+        this.size.width = width;
+        this.size.height = height;
+        this.leftBound = x * this.cellSize ;
+        this.rightBound = (x + this.size.width) * this.cellSize;
         this.topBound = y * this.cellSize;
-        this.bottomBound = (y + 1) * this.cellSize;
+        this.bottomBound = (y + this.size.height) * this.cellSize;
     }
 
     GetID(){
