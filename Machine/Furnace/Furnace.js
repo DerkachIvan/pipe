@@ -5,11 +5,22 @@ class Furnace extends GameObject {
         super(ctx, x, y, 2, 2);
         this.SetTag("Furnace");
         this.SetTag("HasInventory");
+        this.SetTag("HasInput");
+        this.SetTag("HasOutput");
 
+        this.machineType = "Furnace";
 
-        this.inventory = new Inventory(5);
+        this.input = new Inventory(2);
+        this.input.slots[0].constItem = true;
+        this.input.slots[0].item = Coal;
 
-        this.inventory.TryInsert(Coal, 5)
+        this.output = new Inventory(1);
+        
+        this.input.TryInsert(Coal, 5)
+    }
+
+    CanCraft(){
+        
     }
 
     static loadSprites() {
@@ -39,7 +50,8 @@ class Furnace extends GameObject {
         ctx.save();
         ctx.strokeStyle = "black";
         ctx.fillStyle = "lightgrey";
-        this.inventory.Draw(ctx, this.rightBound, this.topBound);
-        ctx.restore();;
+        this.input.Draw(ctx, this.rightBound, this.topBound);
+        this.output.Draw(ctx, this.rightBound, this.topBound + 20);
+        ctx.restore();
     }
 }

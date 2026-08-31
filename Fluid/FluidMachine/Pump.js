@@ -41,8 +41,8 @@ class Pump extends FluidMachine {
 
         if (
             this.input && this.output &&
-            this.input.CheckTag(["Pipe", "FluidMashine"]) &&
-            this.output.CheckTag(["Pipe", "FluidMashine"]) &&
+            this.input.CheckTag("Pipe", "FluidMashine") &&
+            this.output.CheckTag("Pipe", "FluidMashine") &&
             (this.input.fluidType === this.output.fluidType || this.output.fluidType === "empty")
         ) {
             if (this.output.fluidType === "empty") {

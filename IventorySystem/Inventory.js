@@ -37,7 +37,7 @@ class Inventory {
             if(slot == null) continue;
 
             let itemGroup = slot.TryGet(amount, item)
-            console.log(itemGroup)
+            //console.log(itemGroup)
             
             if(itemGroup.amount > 0){
                 amount -= itemGroup.amount;

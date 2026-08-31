@@ -33,9 +33,8 @@ class GameObject {
         this.tag.push(tag);
     }
 
-    CheckTag(tag){
-        if (typeof tag === "string") return this.tag.includes(tag);
-        if (Array.isArray(tag)) return tag.some(t => this.tag.includes(t));
+    CheckTag(...tags){
+        return tags.some(tag => this.tag.includes(tag));
     }
 
     Rotate(){

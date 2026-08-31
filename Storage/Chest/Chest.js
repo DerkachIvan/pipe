@@ -5,6 +5,7 @@ class Chest extends GameObject {
         super(ctx, x, y, 1, 1);
         this.SetTag("Chest");
         this.SetTag("HasInventory");
+        this.SetTag("Storage");
 
         this.inventory = new Inventory(10);
 

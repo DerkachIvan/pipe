@@ -70,7 +70,7 @@ class Pipe extends GameObject{
     UpdateJoinDirections() {
         const canConnect = (x, y) => {
             const neighbor = map.get(x, y);
-            return neighbor instanceof GameObject && neighbor.CheckTag(["Pipe", "Pump", "FluidMashine"]);
+            return neighbor instanceof GameObject && neighbor.CheckTag("Pipe", "Pump", "FluidMashine");
         };
 
         this.joinDirections.up = canConnect(this.x, this.y - 1);

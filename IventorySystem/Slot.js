@@ -30,7 +30,7 @@ class Slot {
     TryInsert(item, amount){
         if(this.constItem){
             if(this.item.name === item.name){
-                if(this.amount + amount >= item.maxStackSize) return false;
+                if(this.amount + amount > item.maxStackSize) return false;
                 
                 this.amount += amount;
                 return true;

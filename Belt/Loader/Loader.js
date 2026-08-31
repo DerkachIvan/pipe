@@ -35,7 +35,7 @@ static sprites = {};
     Update(){
         let nextDir = Loader.dirs[this.direction].output
         let nextObj = map.get(this.x + nextDir.x, this.y + nextDir.y);
-        if(nextObj instanceof BeltTile || nextObj?.CheckTag("HasInventory")){
+        if(nextObj instanceof BeltTile || nextObj?.CheckTag("HasInput", "Storage")){
             this.nextObject = nextObj;
         } else{
             this.nextObject = null;
@@ -43,7 +43,7 @@ static sprites = {};
 
         let previousDir = Loader.dirs[this.direction].input
         let previousObj = map.get(this.x + previousDir.x, this.y + previousDir.y);
-        if(previousObj instanceof BeltTile || previousObj?.CheckTag("HasInventory")){
+        if(previousObj instanceof BeltTile || previousObj?.CheckTag("HasOutput", "Storage")){
             this.previousObject = previousObj;
         } else{
             this.previousObject = null;
@@ -56,17 +56,29 @@ static sprites = {};
                 this.previousObject.progress = 0;
                 this.previousObject.item = null;
             }
-        } else if(this.previousObject?.CheckTag("HasInventory") && this.item == null){
-            let itemsGroups = this.previousObject.inventory.TryGet(1);
+        } else if(this.previousObject?.CheckTag("HasOutput", "Storage") && this.item == null){
+            let itemsGroups;
+            if(this.previousObject?.CheckTag("HasOutput")){
+                itemsGroups = this.previousObject.output.TryGet(1);
+            }else{
+                itemsGroups = this.previousObject.inventory.TryGet(1);
+            }
+
             if(itemsGroups.totalAmount > 0){
                 this.item = itemsGroups.items[0].item;
             }
 
         }
 
-        if(this.nextObject?.CheckTag("HasInventory") && this.item != null){
-            if(this.nextObject.inventory.TryInsert(this.item, 1)){
-                this.item = null
+        if(this.nextObject?.CheckTag("HasInput", "Storage") && this.item != null){
+            if(this.nextObject?.CheckTag("HasInput")){
+                if(this.nextObject.input.TryInsert(this.item, 1)){
+                    this.item = null
+                }
+            }else{
+                if(this.nextObject.inventory.TryInsert(this.item, 1)){
+                    this.item = null
+                }
             }
         }else if(this.nextObject instanceof BeltTile){
             if(this.nextObject.TryInsert(this.item)){
