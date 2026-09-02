@@ -33,9 +33,25 @@ class Furnace extends CraftingMachine {
     }
 
     DrawInfo(ctx) {
-        ctx.save();
-        this.DrawInventory(ctx)
-        ctx.restore();
+    }
+
+    DrawInfoHtml(container, offsetX, offsetY, scale){
+        // Оба инвентаря печи находятся внутри одной экранной панели.
+        const panel = document.createElement("div");
+        panel.className = "inventory-panel";
+        container.appendChild(panel);
+
+        const inventoryContent = document.createElement("div");
+        inventoryContent.className = "inventory-content";
+        panel.appendChild(inventoryContent);
+
+        this.input.DrawHtml(
+            inventoryContent
+        );
+        this.output.DrawHtml(
+            inventoryContent
+        );
+        this.CreateHtmlPreview(panel, "Machine/Furnace/Sprites/Furnace.png", "Furnace");
     }
     
     DrawInventory(ctx){

@@ -17,6 +17,34 @@ class Inventory {
         }
     }
 
+    DrawHtml(parent, x, y, scale = 1){
+        // Создаём HTML-представление инвентаря вместо отрисовки в canvas.
+        const inventoryElement = document.createElement("div");
+        inventoryElement.className = "inventory";
+
+        for(let slot of this.slots){
+            const slotElement = document.createElement("div");
+            slotElement.className = "inventory-slot";
+
+            if(slot !== null && slot.item !== null){
+                // Картинка и количество отображаются только для занятого слота.
+                const itemImage = document.createElement("img");
+                itemImage.src = `IventorySystem/Items/Sprites/${slot.item.name}.png`;
+                itemImage.alt = slot.item.name;
+                slotElement.appendChild(itemImage);
+
+                const amountElement = document.createElement("span");
+                amountElement.className = "inventory-amount";
+                amountElement.textContent = slot.amount;
+                slotElement.appendChild(amountElement);
+            }
+
+            inventoryElement.appendChild(slotElement);
+        }
+
+        parent.appendChild(inventoryElement);
+    }
+
     TryInsert(item, amount){
         for(let slot of this.slots){
             if(slot.TryInsert(item, amount)){

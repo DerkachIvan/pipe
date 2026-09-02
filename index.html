@@ -20,10 +20,100 @@
             image-rendering: pixelated;
             image-rendering: crisp-edges;
         }
+
+        #inventory-ui {
+            /* Контейнер инвентаря находится поверх canvas и занимает весь экран. */
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            font-family: Arial, sans-serif;
+        }
+
+        .inventory {
+            /* Слоты располагаются в стабильной сетке и не сжимают превью объекта. */
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-auto-rows: 50px;
+            gap: 2px;
+            pointer-events: none;
+        }
+
+        .inventory-panel {
+            /* Панель всегда остаётся в центре экрана независимо от камеры. */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #d8d5ce;
+            border: 2px solid #333;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .inventory-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .object-preview {
+            /* Превью не сжимается, когда сетка инвентаря становится шире. */
+            flex: 0 0 100px;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+            background: #ebe9e5;
+        }
+
+        .object-preview img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .inventory-slot {
+            /* Фиксированный размер не меняется при приближении карты. */
+            box-sizing: border-box;
+            position: relative;
+            background: lightgrey;
+            border: 1px solid black;
+            image-rendering: pixelated;
+            width: 50px;
+            height: 50px;
+        }
+
+        .inventory-slot img {
+            width: 80%;
+            height: 80%;
+            position: absolute;
+            inset: 10%;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .inventory-amount {
+            position: absolute;
+            right: 2px;
+            bottom: 1px;
+            color: black;
+            font-size: 110%;
+            font-weight: bold;
+            line-height: 1;
+            -webkit-text-stroke: 1px white;
+        }
     </style>
 </head>
 <body>
     <canvas id="canvas" width="800" height="400"></canvas>
+    <div id="inventory-ui"></div>
     <script src="utils.js"></script>
     <script src="Camera.js"></script>
     <script src="IventorySystem/Items/Items.js"></script>

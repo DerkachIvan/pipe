@@ -29,6 +29,24 @@ class GameObject {
         }
     }
 
+    static DrawSelectedObjectInfoHtml(container, camera, canvas) {
+        // Пересобираем панель, чтобы содержимое отражало актуальные слоты.
+        container.replaceChildren();
+        if (!(GameObject.SELECTED_OBJECT instanceof GameObject)) {
+            return;
+        }
+
+        const canvasRect = canvas.getBoundingClientRect();
+        // Старые координаты передаются для совместимости, но HTML-панель их не использует.
+        GameObject.SELECTED_OBJECT.DrawInfoHtml(
+            container,
+            canvasRect.left - camera.x * camera.zoom,
+            canvasRect.top - camera.y * camera.zoom,
+            camera.zoom
+        );
+        GameObject.SELECTED_OBJECT.selected = true;
+    }
+
     SetTag(tag){
         this.tag.push(tag);
     }
@@ -63,6 +81,20 @@ class GameObject {
 
     DrawInfo(ctx) {
         
+    }
+
+    DrawInfoHtml(container, offsetX, offsetY, scale) {
+    }
+
+    CreateHtmlPreview(parent, imageSrc, objectName) {
+        const preview = document.createElement("div");
+        preview.className = "object-preview";
+
+        const image = document.createElement("img");
+        image.src = imageSrc;
+        image.alt = objectName;
+        preview.appendChild(image);
+        parent.appendChild(preview);
     }
 
     getNeighbors(){

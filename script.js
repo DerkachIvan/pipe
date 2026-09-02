@@ -1,4 +1,5 @@
 var canvas = document.getElementById("canvas");
+var inventoryUI = document.getElementById("inventory-ui");
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
 ctx.webkitImageSmoothingEnabled = false;
@@ -100,6 +101,7 @@ function Update() {
     map.Draw();
     GameObject.DrawSelectedObjectInfo(ctx);
     camera.End(ctx);
+    GameObject.DrawSelectedObjectInfoHtml(inventoryUI, camera, canvas);
 
 
     //draw FPS

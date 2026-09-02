@@ -7,9 +7,9 @@ class Chest extends GameObject {
         this.SetTag("HasInventory");
         this.SetTag("Storage");
 
-        this.inventory = new Inventory(10);
+        this.inventory = new Inventory(32);
 
-        this.inventory.TryInsert(Coal, 5)
+        this.inventory.TryInsert(Coal, 5);
     }
 
     static loadSprites() {
@@ -30,9 +30,22 @@ class Chest extends GameObject {
     }
 
     DrawInfo(ctx) {
-        ctx.save();
-        this.DrawInventory(ctx)
-        ctx.restore();
+    }
+
+    DrawInfoHtml(container, offsetX, offsetY, scale){
+        // Инвентарь сундука выводится в центр экрана поверх canvas.
+        const panel = document.createElement("div");
+        panel.className = "inventory-panel";
+        container.appendChild(panel);
+
+        const inventoryContent = document.createElement("div");
+        inventoryContent.className = "inventory-content";
+        panel.appendChild(inventoryContent);
+
+        this.inventory.DrawHtml(
+            inventoryContent
+        );
+        this.CreateHtmlPreview(panel, "Storage/Chest/Sprites/Chest.png", "Chest");
     }
     
     DrawInventory(ctx){
