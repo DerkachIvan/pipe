@@ -1,5 +1,6 @@
 const Coal = new Item("Coal", "Material", 99)
 const IronOre = new Item("IronOre", "Material", 99)
-const IronIngot = new Item("IronIngot", "Material", 99)
+const IronBar = new Item("IronBar", "Material", 99)
 const Copper = new Item("Copper", "Material", 99)
+const Oil = new Item("Oil", "Material", 99)
 const CompressedOil = new Item("CompressedOil", "Material", 99)

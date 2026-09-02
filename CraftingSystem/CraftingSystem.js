@@ -1,23 +1,105 @@
 class CraftingSystem {
-    static CanCraft(inventory, recipe, mashineType){
-        if(!inventory || !recipe){
+    static UpdateMachine(machine){
+        if(!machine.recipe) return;
+
+        if(machine.crafting){
+            machine.craftProgress += deltaTime;
+
+            if(machine.craftProgress >= machine.craftTime){
+                this.Finish(machine);
+            }
+
+            return;
+        }
+
+        this.Start(machine);
+    }
+
+    static Start(machine){
+        const recipe = machine.recipe;
+
+        if(recipe.machineType !== undefined && recipe.machineType !== machine.machineType){
             return false;
         }
 
-        if(recipe.machine !== mashineType){
+        if(!this.HasIngredients(machine, recipe)){
             return false;
         }
 
-        const ingredients = Array.isArray(recipe.input)
+        if(!this.CanOutput(machine, recipe)){
+            return false;
+        }
+
+        if(!this.ConsumeIngredients(machine, recipe)){
+            return false;
+        }
+
+        machine.crafting = true;
+        machine.craftProgress = 0;
+        machine.craftTime = recipe.time ?? 1;
+        
+        return true;
+    }
+
+    static Finish(machine){
+        const recipe = machine.recipe;
+
+        if(!recipe){
+            return;
+        }
+
+        machine.output.TryInsert(
+            recipe.output.product,
+            recipe.output.amount
+        );
+
+        machine.crafting = false;
+        machine.craftProgress = 0;
+        machine.craftTime = 0;
+    }
+
+    static HasIngredients(machine, recipe){
+        const inputs = Array.isArray(recipe.input)
         ? recipe.input
         : [recipe.input];
 
-        for (const ingredient of ingredients){
-            if(!this.HasItem(
-                inventory,
-                ingredient.material,
-                ingredient.amount
-            )){
+        for(const input of inputs){
+            let amount = 0;
+
+            for(const slot of machine.input.slots){
+                if(slot == null || slot.item == null){
+                    continue;
+                }
+
+                if(slot.item === input.material){
+                    amount += slot.amount;
+                }
+
+                if(amount >= input.amount){
+                    break;
+                }
+            }
+
+            if(amount < input.amount){
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    static ConsumeIngredients(machine, recipe){
+        const inputs = Array.isArray(recipe.input)
+        ? recipe.input
+        : [recipe.input];
+
+        for(const input of inputs){
+            const result = machine.input.TryGet(
+                input.amount,
+                input.material
+            );
+
+            if(result.totalAmount < input.amount){
                 return false;
             }
         }
@@ -25,44 +107,37 @@ class CraftingSystem {
         return true;
     }
 
-    static HasItem(inventory, item, amount){
-        let total = 0;
-        for(const slot of inventory.slots){
-            if(!slot || !slot.item){
+    static CanOutput(machine, recipe){
+        const product = recipe.output.product;
+
+        for(const slot of machine.output.slots){
+            if(slot == null){
                 continue;
             }
 
-            if(slot.item.name === item.name){
-                total += slot.amount;
+            if(slot.item == null){
+                return true;
             }
 
-            if(total >= amount){
-                return true;
+            if(slot.item === product){
+                if(slot.amount + recipe.output.amount <= product.maxStackSize){
+                    return true;
+                }
             }
         }
 
         return false;
     }
 
-    static ConsumeIngredients(inventory, recipe){
-        const ingredients = Array.isArray(recipe.input)
-        ? recipe.input
-        : [recipe.input];
-
-        for(const ingredient of ingredients){
-            let remaining = ingredient.amount;
-
-            while(remaining > 0){
-                const group = inventory.TryGet(remaining, ingredient.material);
-
-                if(group.totalAmount <= 0){
-                    return false;
-                }
-
-                remaining -= group.totalAmount;
-            }
+    static GetProgress(machine){
+        if(!machine.crafting){
+            return 0;
         }
 
-        return true;
+        if(machine.craftTime <= 0){
+            return 1;
+        }
+
+        return Math.min(machine.craftProgress / machine.craftTime, 1);
     }
 }

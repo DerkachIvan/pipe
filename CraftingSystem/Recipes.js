@@ -13,16 +13,22 @@ const Recipes = {
         }
     },
 
-    "IronIngot": {
+    "IronBar": {
         machine: "Furnace",
-
-        input: {
-            material: IronOre,
-            amount: 1
-        },
+        time: 1,
+        input: [
+            {
+                material: Coal,
+                amount: 1
+            },
+            {
+                material: Copper,
+                amount: 5
+            }
+        ],
 
         output: {
-            product: IronIngot,
+            product: IronBar,
             amount: 1
         }
     }

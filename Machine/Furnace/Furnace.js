@@ -1,26 +1,18 @@
-class Furnace extends GameObject {
+class Furnace extends CraftingMachine {
     static sprites = {};
 
     constructor(ctx, x, y){
-        super(ctx, x, y, 2, 2);
+        super(ctx, x, y, 2, 2, 2, 1); // Assuming 1 input slot and 1 output slot for Furnace
         this.SetTag("Furnace");
-        this.SetTag("HasInventory");
-        this.SetTag("HasInput");
-        this.SetTag("HasOutput");
 
         this.machineType = "Furnace";
 
-        this.input = new Inventory(2);
         this.input.slots[0].constItem = true;
-        this.input.slots[0].item = Coal;
-
-        this.output = new Inventory(1);
+        this.input.slots[0].item = Coal; // Assuming the Furnace takes Coal as input for this example
+        this.input.slots[1].constItem = true;
+        this.input.slots[1].item = Copper; // Assuming the Furnace takes Copper as input for this example
         
-        this.input.TryInsert(Coal, 5)
-    }
-
-    CanCraft(){
-        
+        this.SetRecipe(Recipes["IronBar"]); // Assuming the Furnace has a recipe for IronBar
     }
 
     static loadSprites() {

@@ -253,7 +253,7 @@ document.addEventListener("keydown", function(e) {
     }
     if (e.key.toLowerCase() === "v"){
         let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
-        newBeltTitle.item = CompressedOil;
+        newBeltTitle.item = Copper;
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "b"){
