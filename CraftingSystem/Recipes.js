@@ -2,10 +2,12 @@ const Recipes = {
     "CompressedOil": {
         machine: "Compressor",
 
-        input: {
-            material: Oil,
-            amount: 2
-        },
+        input: [
+            {
+                material: Oil,
+                amount: 2
+            }
+        ],
 
         output: {
             product: CompressedOil,
@@ -22,7 +24,7 @@ const Recipes = {
                 amount: 1
             },
             {
-                material: Copper,
+                material: IronOre,
                 amount: 5
             }
         ],

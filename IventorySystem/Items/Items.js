@@ -10,7 +10,8 @@ class Item {
         const spriteNames = [
             "CompressedOil", 
             "Coal",
-            "Copper",
+            "CopperOre",
+            "IronOre",
             "IronBar", 
             "None"
         ];

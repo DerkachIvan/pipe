@@ -6,12 +6,6 @@ class Furnace extends CraftingMachine {
         this.SetTag("Furnace");
 
         this.machineType = "Furnace";
-
-        this.input.slots[0].constItem = true;
-        this.input.slots[0].item = Coal; // Assuming the Furnace takes Coal as input for this example
-        this.input.slots[1].constItem = true;
-        this.input.slots[1].item = Copper; // Assuming the Furnace takes Copper as input for this example
-        
         this.SetRecipe(Recipes["IronBar"]); // Assuming the Furnace has a recipe for IronBar
     }
 
