@@ -34,7 +34,9 @@ class FluidCompressor extends FluidMachine {
         this.getNeighbors().forEach(neighbor => {
             if (neighbor instanceof GameObject) {
                 if(neighbor.CheckTag("Pipe")){
-                    if (neighbor.fluidType === this.fluidType){
+                    const neighborType = typeof neighbor.fluidType === "string" ? neighbor.fluidType : neighbor.fluidType?.id || "empty";
+                    const machineType = typeof this.fluidType === "string" ? this.fluidType : this.fluidType?.id || "empty";
+                    if (neighborType === machineType){
                         let freeSpace = this.capacity - this.currentFill;
                         let transferPerUpdate = this.amountFluidTransferPerSecond * this.fluidTransferRate * deltaTime;
                         

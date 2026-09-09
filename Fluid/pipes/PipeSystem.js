@@ -11,6 +11,25 @@ class PipeSystem{
         this.flowStep();
     }
 
+    canTransferFluid(sourcePipe, targetPipe) {
+        if (!sourcePipe || !targetPipe) return false;
+        if (!isFinite(targetPipe.flowLevel) || targetPipe.flowLevel <= sourcePipe.flowLevel) return false;
+
+        const targetCurrentType = targetPipe.nextFluidType || targetPipe.fluidType || "empty";
+        const sourceType = sourcePipe.fluidType || "empty";
+        const targetTypeId = typeof targetCurrentType === "string" ? targetCurrentType : targetCurrentType.id || "empty";
+        const sourceTypeId = typeof sourceType === "string" ? sourceType : sourceType.id || "empty";
+
+        const targetIsEmpty = targetPipe.currentFill <= 0 || targetTypeId === "empty" || !targetPipe.hasFluid;
+        const sameFluidType = targetTypeId === sourceTypeId;
+
+        if (targetTypeId !== "empty" && !sameFluidType) {
+            return false;
+        }
+
+        return targetIsEmpty || sameFluidType;
+    }
+
     bfs(){
         for(let p of this.pipes){
             p.flowLevel = Infinity;
@@ -41,6 +60,13 @@ class PipeSystem{
     flowStep(){
         for(let p of this.pipes){
             p.nextFill = p.currentFill;
+            p.nextFluidType = p.fluidType;
+            if (p.currentFill <= p.thresholdFluidTypeReset) {
+                p.currentFill = 0;
+                p.fluidType = "empty";
+                p.hasFluid = false;
+                p.nextFluidType = "empty";
+            }
         }
 
         for(let p of this.pipes){
@@ -50,18 +76,17 @@ class PipeSystem{
 
             for(let n of p.getNeighborsPipes()){
                 if(!isFinite(n.flowLevel)) continue;
-                let isEmptyPipe = n.currentFill <= 0 && n.fluidType === "empty" && !n.hasFluid;
-                let canAccept = isEmptyPipe || n.fluidType === p.fluidType || n.currentFill <= 0;
-                if (
-                    n.flowLevel > p.flowLevel &&
-                    canAccept
-                ){
-                    if (isEmptyPipe || n.currentFill <= 0) {
-                        n.fluidType = p.fluidType;
+
+                if (!this.canTransferFluid(p, n)) continue;
+
+                if (n.currentFill <= 0 || n.fluidType === "empty" || !n.hasFluid) {
+                    if (n.nextFluidType === "empty" || n.nextFluidType === p.fluidType) {
+                        n.nextFluidType = p.fluidType;
                         n.hasFluid = true;
                     }
-                    valid.push(n);
                 }
+
+                valid.push(n);
             }
 
             if (valid.length === 0) continue;
@@ -75,12 +100,18 @@ class PipeSystem{
 
                 p.nextFill -= actual;
                 n.nextFill += actual;
+                if (n.nextFill > 0 && (n.nextFluidType === "empty" || n.nextFluidType === p.fluidType)) {
+                    n.nextFluidType = p.fluidType;
+                    n.hasFluid = true;
+                }
             }
         }
 
         for(let p of this.pipes){
             for(let n of p.getNeighborsPipes()){
                 if(n.flowLevel !== p.flowLevel) continue;
+                if (n.fluidType !== "empty" && n.fluidType !== p.fluidType) continue;
+
                 let diff = p.nextFill - n.nextFill;
                 if (diff <= 0) continue;
                 let flow = diff * 0.25;
@@ -88,9 +119,11 @@ class PipeSystem{
                 let space = n.capacity - n.nextFill;
                 let actual = Math.min(flow, space);
 
-                if (actual > 0 && (n.fluidType === "empty" || !n.hasFluid)) {
-                    n.fluidType = p.fluidType;
-                    n.hasFluid = true;
+                if (actual > 0) {
+                    if ((n.currentFill <= 0 || n.fluidType === "empty" || !n.hasFluid) && (n.nextFluidType === "empty" || n.nextFluidType === p.fluidType)) {
+                        n.nextFluidType = p.fluidType;
+                        n.hasFluid = true;
+                    }
                 }
 
                 p.nextFill -= actual;
@@ -100,8 +133,10 @@ class PipeSystem{
 
         for(let p of this.pipes){
             p.currentFill = p.nextFill;
+            p.fluidType = p.nextFluidType;
             if (p.currentFill <= p.thresholdFluidTypeReset) {
                 p.currentFill = 0;
+                p.fluidType = "empty";
                 p.hasFluid = false;
             }
         }

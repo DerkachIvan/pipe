@@ -39,14 +39,17 @@ class Pump extends FluidMachine {
         }
 
 
+        const inputType = typeof this.input?.fluidType === "string" ? this.input.fluidType : this.input?.fluidType?.id || "empty";
+        const outputType = typeof this.output?.fluidType === "string" ? this.output.fluidType : this.output?.fluidType?.id || "empty";
+
         if (
             this.input && this.output &&
             this.input.CheckTag("Pipe", "FluidMashine") &&
             this.output.CheckTag("Pipe", "FluidMashine") &&
-            (this.input.fluidType === this.output.fluidType || this.output.fluidType === "empty")
+            (inputType === outputType || outputType === "empty")
         ) {
-            if (this.output.fluidType === "empty") {
-                this.output.fluidType = this.input.fluidType;
+            if (outputType === "empty") {
+                this.output.fluidType = inputType;
             }
             let outputFreeSpace = this.output.capacity - this.output.currentFill;
             let amountToTransfer = Math.min(this.workRate, this.input.currentFill, outputFreeSpace);

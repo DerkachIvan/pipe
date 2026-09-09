@@ -7,7 +7,7 @@ class FluidGenerator extends FluidMachine {
         this.SetTag("FluidMashine");
         this.name = "FluidGenerator";
 
-        this.fluidType = "water"; // Default fluid type
+        this.fluidType = "water";
         this.productionRate = 1;
         this.productPerSecond = 1;
 
@@ -44,14 +44,17 @@ class FluidGenerator extends FluidMachine {
             this.currentFill = this.capacity;
         }
 
+        const generatorType = typeof this.fluidType === "string" ? this.fluidType : this.fluidType?.id || "empty";
+
         this.getNeighbors().forEach(neighbor => {
             if (neighbor instanceof GameObject && neighbor.CheckTag("Pipe")) {
-                if (neighbor.fluidType === "empty" || neighbor.fluidType === this.fluidType || neighbor.currentFill <= 0) {
+                const neighborType = typeof neighbor.fluidType === "string" ? neighbor.fluidType : neighbor.fluidType?.id || "empty";
+                if (neighborType === "empty" || neighborType === generatorType || neighbor.currentFill <= 0) {
                     let neighborFreeSpace = neighbor.capacity - neighbor.currentFill;
                     let amountToTransfer = Math.min(this.currentFill, neighborFreeSpace);
                     this.currentFill -= amountToTransfer;
                     neighbor.currentFill += amountToTransfer;
-                    neighbor.fluidType = this.fluidType;
+                    neighbor.fluidType = generatorType;
                     neighbor.isSource = true;
                 }
             }

@@ -7,11 +7,13 @@ class Pipe extends GameObject{
         this.SetTag("Pipe");
 
         this.capacity = 5;
-        this.fluid = new Fluid("empty", 0);
+        this.fluid = new Fluid(EMPTY_FLUID, 0);
         this.hasFluid = false;
         Object.defineProperty(this, "fluidType", {
-            get: () => this.fluid.type,
-            set: (value) => { this.fluid.type = value; }
+            get: () => this.fluid.type?.id ?? "empty",
+            set: (value) => {
+                this.fluid.type = FLUID_TYPES[value] ?? EMPTY_FLUID;
+            }
         });
         Object.defineProperty(this, "currentFill", {
             get: () => this.fluid.quantity,
@@ -19,6 +21,7 @@ class Pipe extends GameObject{
         });
         this.currentFill = 0;
         this.nextFill = 0;
+        this.nextFluidType = "empty";
 
         this.flowLevel = Infinity;
         this.thresholdFluidTypeReset = 0.0001; // Threshold for resetting fluid type when currentFill is low
@@ -67,10 +70,64 @@ class Pipe extends GameObject{
         return key;
     }
 
+    getAdjacentFluidTypes() {
+        const types = new Set();
+        const dirs = [
+            {x: 0, y: -1},
+            {x: 0, y: 1},
+            {x: -1, y: 0},
+            {x: 1, y: 0},
+        ];
+
+        for (const dir of dirs) {
+            const neighbor = map.get(this.x + dir.x, this.y + dir.y);
+            if (!(neighbor instanceof GameObject)) continue;
+            if (!(neighbor instanceof Pipe || neighbor.CheckTag("Pump", "FluidMashine"))) continue;
+
+            const type = neighbor.fluidType ?? "empty";
+            if (type !== "empty") {
+                types.add(type);
+            }
+        }
+
+        return types;
+    }
+
+    canConnectTo(neighbor) {
+        if (!(neighbor instanceof GameObject)) return false;
+        if (!(neighbor instanceof Pipe || neighbor.CheckTag("Pump", "FluidMashine"))) return false;
+
+        const thisFluidType = this.fluidType ?? "empty";
+        const neighborFluidType = neighbor.fluidType ?? "empty";
+        const adjacentTypes = this.getAdjacentFluidTypes();
+
+        if (neighborFluidType !== "empty") {
+            adjacentTypes.add(neighborFluidType);
+        }
+
+        if (adjacentTypes.size > 1) {
+            return false;
+        }
+
+        if (thisFluidType !== "empty" && neighborFluidType !== "empty" && thisFluidType !== neighborFluidType) {
+            return false;
+        }
+
+        if (thisFluidType === "empty" && neighborFluidType !== "empty") {
+            return true;
+        }
+
+        if (thisFluidType !== "empty" && neighborFluidType === "empty") {
+            return true;
+        }
+
+        return true;
+    }
+
     UpdateJoinDirections() {
         const canConnect = (x, y) => {
             const neighbor = map.get(x, y);
-            return neighbor instanceof GameObject && neighbor.CheckTag("Pipe", "Pump", "FluidMashine");
+            return neighbor instanceof GameObject && this.canConnectTo(neighbor);
         };
 
         this.joinDirections.up = canConnect(this.x, this.y - 1);

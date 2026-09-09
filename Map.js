@@ -41,6 +41,65 @@ class Map {
             }   
         }
 
+        if (!(object instanceof Pipe || object.CheckTag("Pump", "FluidMashine"))) {
+            return true;
+        }
+
+        const fluidType = object.fluidType ?? "empty";
+        const directions = [
+            {x: 0, y: -1},
+            {x: 0, y: 1},
+            {x: -1, y: 0},
+            {x: 1, y: 0},
+        ];
+
+        const visited = new Set();
+        const fluidTypes = new Set();
+        const queue = [];
+
+        for (const dir of directions) {
+            const neighbor = this.get(object.x + dir.x, object.y + dir.y);
+            if (neighbor instanceof GameObject && (neighbor instanceof Pipe || neighbor.CheckTag("Pump", "FluidMashine"))) {
+                queue.push({x: neighbor.x, y: neighbor.y});
+            }
+        }
+
+        while (queue.length > 0) {
+            const current = queue.shift();
+            const key = `${current.x},${current.y}`;
+            if (visited.has(key)) continue;
+            visited.add(key);
+
+            const node = this.get(current.x, current.y);
+            if (node instanceof GameObject && (node instanceof Pipe || node.CheckTag("Pump", "FluidMashine"))) {
+                const type = node.fluidType ?? "empty";
+                if (type !== "empty") {
+                    fluidTypes.add(type);
+                }
+
+                for (const dir of directions) {
+                    const nx = current.x + dir.x;
+                    const ny = current.y + dir.y;
+                    const nextNode = this.get(nx, ny);
+
+                    if (nextNode instanceof GameObject && (nextNode instanceof Pipe || nextNode.CheckTag("Pump", "FluidMashine"))) {
+                        const nextKey = `${nx},${ny}`;
+                        if (!visited.has(nextKey)) {
+                            queue.push({x: nx, y: ny});
+                        }
+                    }
+                }
+            }
+        }
+
+        if (fluidType !== "empty") {
+            fluidTypes.add(fluidType);
+        }
+
+        if (fluidTypes.size > 1) {
+            return false;
+        }
+
         return true;
     }
 
@@ -48,7 +107,7 @@ class Map {
         object.x = x;
         object.y = y;
         if(!this.canPlace(object)){
-            console.log("Cannot place object at", x, y);
+            console.log("Cannot place object at", x, y, "because of fluid mismatch");
             return;
         }
 
@@ -121,10 +180,46 @@ class Map {
         }
     }
 
+    updateNeighborConnections(x, y, width = 1, height = 1) {
+        const affected = new Set();
+
+        for (let dx = -1; dx <= width; dx++) {
+            for (let dy = -1; dy <= height; dy++) {
+                const px = x + dx;
+                const py = y + dy;
+
+                if (this.outOfBounds(px, py)) continue;
+                affected.add(`${px},${py}`);
+
+                const neighbor = this.grid[px][py];
+                if (neighbor instanceof GameObject && typeof neighbor.UpdateJoinDirections === "function") {
+                    neighbor.UpdateJoinDirections();
+                }
+            }
+        }
+
+        for (const key of affected) {
+            const [px, py] = key.split(",").map(Number);
+            const neighbor = this.grid[px][py];
+            if (neighbor instanceof GameObject && typeof neighbor.getNeighborsPipes === "function") {
+                for (const pipe of neighbor.getNeighborsPipes()) {
+                    if (pipe instanceof GameObject && typeof pipe.UpdateJoinDirections === "function") {
+                        pipe.UpdateJoinDirections();
+                    }
+                }
+            }
+        }
+    }
+
     deleteGameObject(x, y) {
         if (this.outOfBounds(x, y)) return;
         let object = this.grid[x][y];
         if (object) {
+            const affectedX = object.x;
+            const affectedY = object.y;
+            const affectedWidth = object.size.width;
+            const affectedHeight = object.size.height;
+
             for (let dx = 0; dx < object.size.width; dx++){
                 for (let dy = 0; dy < object.size.height; dy++){
                     if (!this.outOfBounds(object.x + dx, object.y + dy) && this.grid[object.x + dx][object.y + dy] === object) {
@@ -132,6 +227,8 @@ class Map {
                     }
                 }
             }
+
+            this.updateNeighborConnections(affectedX, affectedY, affectedWidth, affectedHeight);
 
             this.objects.splice(this.objects.indexOf(object), 1);
             this.removeFromArray(this.FluidMashines, object);
