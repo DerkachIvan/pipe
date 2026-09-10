@@ -8,9 +8,9 @@ class FluidMachine extends GameObject {
         this.capacity = capacity;
         this.fluid = new Fluid(EMPTY_FLUID, 0);
         Object.defineProperty(this, "fluidType", {
-            get: () => this.fluid.type?.id ?? "empty",
+            get: () => this.fluid.fluidType || "empty",
             set: (value) => {
-                this.fluid.type = FLUID_TYPES[value] ?? EMPTY_FLUID;
+                this.fluid.fluidType = value;
             }
         });
         Object.defineProperty(this, "currentFill", {
