@@ -1,3 +1,4 @@
+// сделать чтобы можно было использовать в крафтах
 class Fluid {
     constructor(type = EMPTY_FLUID, quantity = 0) {
         this.type = type;
