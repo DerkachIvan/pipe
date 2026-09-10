@@ -1,23 +1,42 @@
 class Fluid {
-    constructor(type = EMPTY_FLUID, quantity = 0) {
-        this.type = typeof type === "string" ? (FLUID_TYPES[type] ?? EMPTY_FLUID) : (type ?? EMPTY_FLUID);
-        this.quantity = quantity;
+    constructor(type = "empty", quantity = 0) {
+        this.type = this.normalizeType(type);
+        this.quantity = Number.isFinite(quantity) ? quantity : 0;
     }
 
-    static fromType(typeKey) {
-        if (!typeKey) return new Fluid("Empty", "Fluid");
+    normalizeType(type) {
         const fluidMap = globalThis.FLUID_TYPES || {};
-        const base = fluidMap[typeKey] || fluidMap.empty || { name: "Empty", type: "Fluid", id: "empty", color: "rgb(0, 0, 0)" };
-        return new Fluid(base);
+
+        if (typeof type === "string") {
+            return fluidMap[type] || fluidMap.empty || {
+                id: "empty",
+                name: "Empty",
+                color: "rgb(0, 0, 0)"
+            };
+        }
+
+        if (type && typeof type === "object") {
+            return type;
+        }
+
+        return fluidMap.empty || {
+            id: "empty",
+            name: "Empty",
+            color: "rgb(0, 0, 0)"
+        };
     }
 
-    setType(typeKey) {
+    get id() {
+        return this.type?.id ?? "empty";
+    }
+
+    set id(value) {
         const fluidMap = globalThis.FLUID_TYPES || {};
-        const base = fluidMap[typeKey] || fluidMap.empty || { name: "Empty", type: "Fluid", id: "empty", color: "rgb(0, 0, 0)" };
-        this.name = base.name;
-        this.type = base.type;
-        this.id = base.id;
-        this.color = base.color;
+        this.type = fluidMap[value] || fluidMap.empty || {
+            id: "empty",
+            name: "Empty",
+            color: "rgb(0, 0, 0)"
+        };
     }
 
     get fluidType() {
@@ -25,15 +44,7 @@ class Fluid {
     }
 
     set fluidType(value) {
-        this.setType(typeof value === "string" ? value : value?.id || "empty");
-    }
-
-    get fluidType() {
-        return this.id;
-    }
-
-    set fluidType(value) {
-        this.id = value;
+        this.id = typeof value === "string" ? value : value?.id ?? "empty";
     }
 
     get currentFill() {
@@ -41,11 +52,16 @@ class Fluid {
     }
 
     set currentFill(value) {
-        this.quantity = value;
+        this.quantity = Number.isFinite(value) ? value : 0;
     }
 
     reset() {
-        this.type = EMPTY_FLUID;
+        const fluidMap = globalThis.FLUID_TYPES || {};
+        this.type = fluidMap.empty || {
+            id: "empty",
+            name: "Empty",
+            color: "rgb(0, 0, 0)"
+        };
         this.quantity = 0;
     }
 }
