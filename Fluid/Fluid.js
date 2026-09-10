@@ -4,12 +4,28 @@ class Fluid {
         this.quantity = quantity;
     }
 
-    get id() {
-        return this.type?.id ?? "empty";
+    static fromType(typeKey) {
+        if (!typeKey) return new Fluid("Empty", "Fluid");
+        const fluidMap = globalThis.FLUID_TYPES || {};
+        const base = fluidMap[typeKey] || fluidMap.empty || { name: "Empty", type: "Fluid", id: "empty", color: "rgb(0, 0, 0)" };
+        return new Fluid(base);
     }
 
-    set id(value) {
-        this.type = FLUID_TYPES[value] ?? EMPTY_FLUID;
+    setType(typeKey) {
+        const fluidMap = globalThis.FLUID_TYPES || {};
+        const base = fluidMap[typeKey] || fluidMap.empty || { name: "Empty", type: "Fluid", id: "empty", color: "rgb(0, 0, 0)" };
+        this.name = base.name;
+        this.type = base.type;
+        this.id = base.id;
+        this.color = base.color;
+    }
+
+    get fluidType() {
+        return this.id;
+    }
+
+    set fluidType(value) {
+        this.setType(typeof value === "string" ? value : value?.id || "empty");
     }
 
     get fluidType() {

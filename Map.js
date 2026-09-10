@@ -220,6 +220,10 @@ class Map {
             const affectedWidth = object.size.width;
             const affectedHeight = object.size.height;
 
+            if (GameObject.SELECTED_OBJECT === object) {
+                GameObject.SELECTED_OBJECT = null;
+            }
+
             for (let dx = 0; dx < object.size.width; dx++){
                 for (let dy = 0; dy < object.size.height; dy++){
                     if (!this.outOfBounds(object.x + dx, object.y + dy) && this.grid[object.x + dx][object.y + dy] === object) {
