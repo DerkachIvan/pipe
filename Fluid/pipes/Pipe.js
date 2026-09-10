@@ -8,17 +8,8 @@ class Pipe extends GameObject{
 
         this.capacity = 5;
         this.fluid = new Fluid(EMPTY_FLUID, 0);
+        this.fluidType = "empty";
         this.hasFluid = false;
-        Object.defineProperty(this, "fluidType", {
-            get: () => this.fluid.type?.id ?? "empty",
-            set: (value) => {
-                this.fluid.type = FLUID_TYPES[value] ?? EMPTY_FLUID;
-            }
-        });
-        Object.defineProperty(this, "currentFill", {
-            get: () => this.fluid.quantity,
-            set: (value) => { this.fluid.quantity = value; }
-        });
         this.currentFill = 0;
         this.nextFill = 0;
         this.nextFluidType = "empty";
