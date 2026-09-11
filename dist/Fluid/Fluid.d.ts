@@ -1,8 +1,9 @@
 declare class Fluid {
-    type: any;
+    type: FluidType;
     quantity: number;
     constructor(type?: FluidType, quantity?: number);
-    get id(): any;
-    set id(value: any);
+    get id(): string;
+    set id(value: string);
+    get isEmpty(): boolean;
 }
 //# sourceMappingURL=Fluid.d.ts.map

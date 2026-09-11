@@ -203,7 +203,7 @@ class Pipe extends GameObject{
         this.ctx.restore();
     }
 
-    getNeighborsPipes(){
+    getNeighborsPipes(): Pipe[] {
         const dirs = [
             {x: 0, y: -1},
             {x: 0, y: 1},

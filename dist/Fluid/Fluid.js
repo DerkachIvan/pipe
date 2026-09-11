@@ -11,5 +11,8 @@ class Fluid {
     set id(value) {
         this.type = FLUID_TYPES[value] ?? EMPTY_FLUID;
     }
+    get isEmpty() {
+        return this.type.id === "empty" || this.quantity <= 0;
+    }
 }
 //# sourceMappingURL=Fluid.js.map
