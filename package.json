@@ -1,0 +1,25 @@
+{
+  "name": "pipe",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/DerkachIvan/pipe#readme",
+  "bugs": {
+    "url": "https://github.com/DerkachIvan/pipe/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DerkachIvan/pipe.git"
+  },
+  "license": "ISC",
+  "author": "I",
+  "type": "commonjs",
+  "main": "script.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json && node copy-assets.js",
+    "watch": "tsc --project tsconfig.json --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

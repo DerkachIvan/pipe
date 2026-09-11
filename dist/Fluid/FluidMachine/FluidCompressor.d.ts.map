@@ -1,0 +1,1 @@
+{"version":3,"file":"FluidCompressor.d.ts","sourceRoot":"","sources":["../../../src/Fluid/FluidMachine/FluidCompressor.ts"],"names":[],"mappings":"AAAA,cAAM,eAAgB,SAAQ,YAAY;IACtC,MAAM,CAAC,OAAO,KAAM;IAEpB,YAAY,GAAG,KAAA,EAAE,CAAC,KAAA,EAAE,CAAC,KAAA,EAAE,QAAQ,SAAK,EAoBnC;IAED,MAAM,CAAC,WAAW,SAKjB;IAED,MAAM,SAyCL;IAED,IAAI,SA8BH;IAED,QAAQ,CAAC,GAAG,KAAA,QAgCX;CACJ"}

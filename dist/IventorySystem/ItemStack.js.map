@@ -1,0 +1,1 @@
+{"version":3,"file":"ItemStack.js","sourceRoot":"","sources":["../../src/IventorySystem/ItemStack.ts"],"names":[],"mappings":";AAAA,MAAM,KAAK;IAGP,YAAY,MAAM,GAAG,CAAC,EAAE,IAAI,GAAG,IAAI;QAC/B,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;QACrB,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;IACrB,CAAC;CACJ"}
