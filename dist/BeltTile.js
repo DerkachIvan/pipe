@@ -15,6 +15,34 @@ class BeltTile extends GameObject {
         this.itemY = 0;
         this.setItemStartEndPoint();
     }
+    CanInsert(item, amount) {
+        return this.progress <= 0 && this.item == null;
+    }
+    HasItem() {
+        if (this.progress >= 1 && this.item) {
+            return true;
+        }
+        return false;
+    }
+    LoaderTryGet() {
+        let itemsGroups = {
+            items: [],
+            totalAmount: 0
+        };
+        if (this.item && this.progress >= 1) {
+            const item = this.item;
+            this.item = null;
+            this.progress = 0;
+            itemsGroups.items.push({ item: item, amount: 1 });
+            itemsGroups.totalAmount += 1;
+            return itemsGroups;
+        }
+        return itemsGroups;
+    }
+    LoaderTryInsert(item) {
+        this.item = item;
+        this.progress = 0;
+    }
     setItemStartEndPoint() {
         console.log('alo');
         if (this.direction === "up") {

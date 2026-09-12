@@ -8,6 +8,26 @@ class Chest extends GameObject {
         this.inventory = new Inventory(32);
         this.inventory.TryInsert(Coal, 5);
     }
+    get item() {
+        for (let slot of this.inventory.slots) {
+            if (slot.item && slot.amount != 0) {
+                return slot.item;
+            }
+        }
+        return null;
+    }
+    HasItem() {
+        return this.inventory.HasItem();
+    }
+    LoaderTryGet() {
+        return this.inventory.TryGet(null, 1);
+    }
+    LoaderTryInsert(item) {
+        this.inventory.TryInsert(item, 1);
+    }
+    CanInsert(item, amount) {
+        return this.inventory.CanInsert(item, amount);
+    }
     static loadSprites() {
         const spriteName = "Chest"; // Assuming a single sprite for Furnace
         let img = new Image();

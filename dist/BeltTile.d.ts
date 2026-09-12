@@ -1,4 +1,4 @@
-declare class BeltTile extends GameObject {
+declare class BeltTile extends GameObject implements InventoryInter {
     static sprites: {};
     nextBeltTile: BeltTile | null;
     previousBeltTile: BeltTile | null;
@@ -46,6 +46,13 @@ declare class BeltTile extends GameObject {
             };
         };
     };
+    CanInsert(item: Item, amount: number): boolean;
+    HasItem(): boolean;
+    LoaderTryGet(): {
+        items: any[];
+        totalAmount: number;
+    };
+    LoaderTryInsert(item: Item): void;
     setItemStartEndPoint(): void;
     Update(): void;
     attemptTransfer(visited: Set<BeltTile>): boolean;

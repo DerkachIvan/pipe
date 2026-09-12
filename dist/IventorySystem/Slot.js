@@ -23,6 +23,23 @@ class Slot {
         }
         ctx.restore();
     }
+    HasItem() {
+        if (this.item === null || this.amount <= 0) {
+            return false;
+        }
+        return true;
+    }
+    CanInsert(item, amount) {
+        if (this.item === null) {
+            return true;
+        }
+        if (this.item.name == item.name) {
+            if (this.amount + amount > item.maxStackSize)
+                return false;
+            return true;
+        }
+        return false;
+    }
     TryInsert(item, amount) {
         if (this.constItem) {
             if (this.item?.name === item?.name) {

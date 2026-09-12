@@ -9,14 +9,17 @@ class FluidMachine extends GameObject {
         Object.defineProperty(this, "fluidType", {
             get: () => this.fluid.type?.id ?? "empty",
             set: (value) => {
-                this.fluid.type = FLUID_TYPES[value] ?? EMPTY_FLUID;
+                this.fluid.type = value ?? EMPTY_FLUID;
             }
         });
         Object.defineProperty(this, "currentFill", {
             get: () => this.fluid.quantity,
             set: (value) => { this.fluid.quantity = value; }
         });
-        this.currentFill = 0;
+        Object.defineProperty(this, "capacity", {
+            get: () => this.fluid.quantity,
+            set: (value) => { this.fluid.quantity = value; }
+        });
         this.joinDirections = {
             up: false,
             down: false,

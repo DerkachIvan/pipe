@@ -46,12 +46,6 @@ function LoadObjectsSprites() {
 function Start() {
     LoadObjectsSprites();
     map = new GameMap(ctx, MX, MY, cellSize);
-    let a = new FluidGenerator(ctx, 0, 0);
-    let c = new Pipe(ctx, 10, 0);
-    c.consumptionRate = 0.03;
-    a.currentFill = 10;
-    map.set(0, 0, a);
-    map.set(10, 0, c);
     pipeSystem = new PipeSystem(map);
     map.Start();
     requestAnimationFrame(Update);
@@ -174,12 +168,12 @@ document.addEventListener("keydown", function (e) {
     }
     if (e.key === "1") {
         let newFluidGenerator = new FluidGenerator(ctx, gridPos.x, gridPos.y);
-        newFluidGenerator.fluidType = "oil"; // Set the fluid type to oil
+        newFluidGenerator.fluidType = FLUID_TYPES.oil; // Set the fluid type to oil
         map.set(gridPos.x, gridPos.y, newFluidGenerator);
     }
     if (e.key === "2") {
         let newFluidGenerator = new FluidGenerator(ctx, gridPos.x, gridPos.y);
-        newFluidGenerator.fluidType = "water"; // Set the fluid type to water
+        newFluidGenerator.fluidType = FLUID_TYPES.water; // Set the fluid type to water
         map.set(gridPos.x, gridPos.y, newFluidGenerator);
     }
     if (e.key === "3") {

@@ -1,23 +1,32 @@
 class FluidMachine extends GameObject {
     static sprites = {};
 
+    fluid: Fluid;
+
     constructor(ctx: CanvasRenderingContext2D, x: number, y: number, capacity: number) {
         super(ctx, x, y);
         this.name = "FluidMachine";
         this.SetTag("FluidMashine");
         this.capacity = capacity;
         this.fluid = new Fluid(EMPTY_FLUID, 0);
+
         Object.defineProperty(this, "fluidType", {
             get: () => this.fluid.type?.id ?? "empty",
             set: (value) => {
-                this.fluid.type = FLUID_TYPES[value] ?? EMPTY_FLUID;
+                this.fluid.type = value ?? EMPTY_FLUID;
             }
         });
+
         Object.defineProperty(this, "currentFill", {
             get: () => this.fluid.quantity,
             set: (value) => { this.fluid.quantity = value; }
         });
-        this.currentFill = 0;
+
+        Object.defineProperty(this, "capacity", {
+            get: () => this.fluid.quantity,
+            set: (value) => { this.fluid.quantity = value; }
+        });
+
         this.joinDirections = {
             up: false,
             down: false,
@@ -25,7 +34,7 @@ class FluidMachine extends GameObject {
             right: false
         };
     }
-
+    
     DrawInfo(ctx) {
         ctx.save();
         ctx.fillStyle = "lightgrey";

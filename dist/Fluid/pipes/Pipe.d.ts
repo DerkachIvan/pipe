@@ -9,7 +9,7 @@ declare class Pipe extends GameObject {
     Update(): void;
     Delete(): void;
     Draw(): void;
-    getNeighborsPipes(): any[];
+    getNeighborsPipes(): Pipe[];
     DrawInfo(ctx: any): void;
 }
 //# sourceMappingURL=Pipe.d.ts.map

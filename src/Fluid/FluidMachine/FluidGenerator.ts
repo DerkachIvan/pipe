@@ -2,12 +2,10 @@ class FluidGenerator extends FluidMachine {
     static sprites = {};
 
     constructor(ctx, x, y, capacity = 10) {
-        super(ctx, x, y, capacity);
+        super(ctx, x, y);
 
         this.SetTag("FluidMashine");
         this.name = "FluidGenerator";
-
-        this.fluidType = "water";
         this.productionRate = 1;
         this.productPerSecond = 1;
 

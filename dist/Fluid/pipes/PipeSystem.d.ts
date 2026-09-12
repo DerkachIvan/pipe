@@ -1,10 +1,10 @@
 declare class PipeSystem {
     maxFlowLevel: number;
     map: GameMap;
-    pipes: GameObject[];
+    pipes: Pipe[];
     constructor(map: GameMap);
     Update(): void;
-    canTransferFluid(sourcePipe: any, targetPipe: any): boolean;
+    canTransferFluid(sourcePipe: Pipe, targetPipe: Pipe): boolean;
     bfs(): void;
     flowStep(): void;
 }

@@ -55,7 +55,7 @@ class GameMap {
             }   
         }
 
-        if (!(object instanceof Pipe || object.CheckTag("Pump", "FluidMashine"))) {
+        if (!(object instanceof Pipe || object.CheckTag("FluidMashine"))) {
             return true;
         }
 
@@ -73,7 +73,7 @@ class GameMap {
 
         for (const dir of directions) {
             const neighbor = this.get(object.x + dir.x, object.y + dir.y);
-            if (neighbor instanceof GameObject && (neighbor instanceof Pipe || neighbor.CheckTag("Pump", "FluidMashine"))) {
+            if (neighbor instanceof GameObject && (neighbor instanceof Pipe || neighbor.CheckTag("FluidMashine"))) {
                 queue.push({x: neighbor.x, y: neighbor.y});
             }
         }
@@ -85,7 +85,7 @@ class GameMap {
             visited.add(key);
 
             const node = this.get(current.x, current.y);
-            if (node instanceof GameObject && (node instanceof Pipe || node.CheckTag("Pump", "FluidMashine"))) {
+            if (node instanceof GameObject && (node instanceof Pipe || node.CheckTag("FluidMashine"))) {
                 const type = node.fluidType ?? "empty";
                 if (type !== "empty") {
                     fluidTypes.add(type);
@@ -96,7 +96,7 @@ class GameMap {
                     const ny = current.y + dir.y;
                     const nextNode = this.get(nx, ny);
 
-                    if (nextNode instanceof GameObject && (nextNode instanceof Pipe || nextNode.CheckTag("Pump", "FluidMashine"))) {
+                    if (nextNode instanceof GameObject && (nextNode instanceof Pipe || nextNode.CheckTag("FluidMashine"))) {
                         const nextKey = `${nx},${ny}`;
                         if (!visited.has(nextKey)) {
                             queue.push({x: nx, y: ny});

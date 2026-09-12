@@ -19,7 +19,7 @@ class Inventory {
         }
     }
 
-    DrawHtml(parent: HTMLElement, x: number, y: number, scale = 1){
+    DrawHtml(parent: HTMLElement){
         // Создаём HTML-представление инвентаря вместо отрисовки в canvas.
         const inventoryElement = document.createElement("div");
         inventoryElement.className = "inventory";
@@ -47,7 +47,25 @@ class Inventory {
         parent.appendChild(inventoryElement);
     }
 
-    TryInsert(item, amount){
+    HasItem(): boolean {
+        for(let slot of this.slots){
+            if(slot.HasItem()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    CanInsert(item: Item, amount: number): boolean {
+        for(let slot of this.slots){
+            if(slot.CanInsert(item, amount)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    TryInsert(item: Item, amount: number){
         for(let slot of this.slots){
             if(slot.TryInsert(item, amount)){
                 return true;
@@ -56,7 +74,7 @@ class Inventory {
         return false
     }
 
-    TryGet(amount = 0, item = null){
+    TryGet(item: Item | null, amount = 0){
         let targetAmount = amount
         let itemsGroups = {
             items: [],

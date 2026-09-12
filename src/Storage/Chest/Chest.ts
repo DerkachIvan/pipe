@@ -1,6 +1,6 @@
-class Chest extends GameObject {
+class Chest extends GameObject implements InventoryInter{
     static sprites = {};
-
+    inventory: Inventory;
     constructor(ctx, x, y){
         super(ctx, x, y, 1, 1);
         this.SetTag("Chest");
@@ -10,6 +10,32 @@ class Chest extends GameObject {
         this.inventory = new Inventory(32);
 
         this.inventory.TryInsert(Coal, 5);
+    }
+
+    get item(): Item | null{
+        for(let slot of this.inventory.slots){
+            if(slot.item && slot.amount != 0){
+                return slot.item;
+            }
+        }
+
+        return null;
+    }
+
+    HasItem(): boolean{
+        return this.inventory.HasItem();
+    }
+
+    LoaderTryGet(){
+        return this.inventory.TryGet(null, 1);
+    }
+
+    LoaderTryInsert(item: Item){
+        this.inventory.TryInsert(item, 1);
+    }
+
+    CanInsert(item: Item, amount: number): boolean {
+        return this.inventory.CanInsert(item, amount);
     }
 
     static loadSprites() {

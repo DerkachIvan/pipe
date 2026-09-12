@@ -64,16 +64,6 @@ function Start(){
     LoadObjectsSprites();
     
     map = new GameMap(ctx, MX, MY, cellSize);
-    let a = new FluidGenerator(ctx, 0, 0);
-    let c = new Pipe(ctx, 10, 0);
-      
-    c.consumptionRate = 0.03;
-
-    a.currentFill = 10;
-
-    map.set(0, 0, a);
-    map.set(10, 0, c);
-
     pipeSystem = new PipeSystem(map);
 
     map.Start();
@@ -169,7 +159,7 @@ canvas.addEventListener("mousedown", function(e) {
         lastY = e.clientY;
     } else if (e.button === 2) {
         console.log("ПКМ нажата на: ", gridPos);
-        let obj = new Pipe(ctx, gridPos.x, gridPos.y);
+        let obj: Pipe = new Pipe(ctx, gridPos.x, gridPos.y);
         map.set(gridPos.x, gridPos.y, obj);
     }
 });
@@ -222,51 +212,51 @@ document.addEventListener("keydown", function(e) {
 
 
     if (e.key === "1"){
-        let newFluidGenerator = new FluidGenerator(ctx, gridPos.x, gridPos.y);
-        newFluidGenerator.fluidType = "oil"; // Set the fluid type to oil
+        let newFluidGenerator: FluidGenerator = new FluidGenerator(ctx, gridPos.x, gridPos.y);
+        newFluidGenerator.fluidType = FLUID_TYPES.oil; // Set the fluid type to oil
         map.set(gridPos.x, gridPos.y, newFluidGenerator);
     }
     if (e.key === "2"){
-        let newFluidGenerator = new FluidGenerator(ctx, gridPos.x, gridPos.y);
-        newFluidGenerator.fluidType = "water"; // Set the fluid type to water
+        let newFluidGenerator: FluidGenerator = new FluidGenerator(ctx, gridPos.x, gridPos.y);
+        newFluidGenerator.fluidType = FLUID_TYPES.water; // Set the fluid type to water
         map.set(gridPos.x, gridPos.y, newFluidGenerator);
     }
     if (e.key === "3"){
-        let newPipe = new Drain(ctx, gridPos.x, gridPos.y);
+        let newPipe: Drain = new Drain(ctx, gridPos.x, gridPos.y);
         map.set(gridPos.x, gridPos.y, newPipe);
     }
     if (e.key === "4"){
-        let newPump = new Pump(ctx, gridPos.x, gridPos.y, rotDir);
+        let newPump: Pump = new Pump(ctx, gridPos.x, gridPos.y, rotDir);
         map.set(gridPos.x, gridPos.y, newPump);
     }
     if (e.key === "5"){
-        let newFluidCompressor = new FluidCompressor(ctx, gridPos.x, gridPos.y);
+        let newFluidCompressor: FluidCompressor = new FluidCompressor(ctx, gridPos.x, gridPos.y);
         map.set(gridPos.x, gridPos.y, newFluidCompressor);
     }
     if (e.key.toLowerCase() === "f"){
-        let newFurnace = new Furnace(ctx, gridPos.x, gridPos.y);
+        let newFurnace: Furnace = new Furnace(ctx, gridPos.x, gridPos.y);
         map.set(gridPos.x, gridPos.y, newFurnace);
     }
     if (e.key.toLowerCase() === "z"){
-        let newChest = new Chest(ctx, gridPos.x, gridPos.y);
+        let newChest: Chest = new Chest(ctx, gridPos.x, gridPos.y);
         map.set(gridPos.x, gridPos.y, newChest);
     }
     if (e.key.toLowerCase() === "c"){
-        let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
+        let newBeltTitle: BeltTile = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
         newBeltTitle.item = Coal;
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "v"){
-        let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
+        let newBeltTitle: BeltTile = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
         newBeltTitle.item = CopperOre;
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "b"){
-        let newBeltTitle = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
+        let newBeltTitle: BeltTile = new BeltTile(ctx, gridPos.x, gridPos.y, rotDir);
         map.set(gridPos.x, gridPos.y, newBeltTitle);
     }
     if (e.key.toLowerCase() === "l"){
-        let newLoader = new Loader(ctx, gridPos.x, gridPos.y, rotDir);
+        let newLoader: Loader = new Loader(ctx, gridPos.x, gridPos.y, rotDir);
         map.set(gridPos.x, gridPos.y, newLoader);
     }
     if (e.key === "Delete"){

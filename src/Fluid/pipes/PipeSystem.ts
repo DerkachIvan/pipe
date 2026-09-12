@@ -1,19 +1,19 @@
 class PipeSystem{
     maxFlowLevel = 10;
     map: GameMap;
-    pipes: GameObject[];
+    pipes: Pipe[];
     constructor(map: GameMap){
         this.map = map;
-        this.pipes = map.getAllWithTag("Pipe");
+        this.pipes = map.getAllWithTag("Pipe") as Pipe[];
     }
 
     Update(){
-        this.pipes = this.map.getAllWithTag("Pipe");
+        this.pipes = this.map.getAllWithTag("Pipe") as Pipe[];
         this.bfs();
         this.flowStep();
     }
 
-    canTransferFluid(sourcePipe, targetPipe) {
+    canTransferFluid(sourcePipe: Pipe, targetPipe: Pipe) {
         if (!sourcePipe || !targetPipe) return false;
         if (!isFinite(targetPipe.flowLevel) || targetPipe.flowLevel <= sourcePipe.flowLevel) return false;
 

@@ -1,23 +1,26 @@
 "use strict";
-class Pump extends FluidMachine {
+class Pump extends GameObject {
     constructor(ctx, x, y, direction = "up") {
-        super(ctx, x, y, 0); // Call the parent constructor with a default capacity of 10
+        super(ctx, x, y, 1, 1);
         this.name = "Pump";
         this.SetTag("Pump");
-        this.SetTag("FluidMashine");
         this.pumpDirection = direction;
         this.input = null;
         this.output = null;
         this.workRate = 0.15;
     }
+    CanConnectPipe(x, y) {
+        const dir = Pump.directions[this.pumpDirection];
+        if ((this.x + dir.input.x == x && this.y + dir.input.y == y) ||
+            (this.x + dir.output.x == x && this.y + dir.output.y == y)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     Update() {
-        const directions = {
-            "up": { input: { x: 0, y: 1 }, output: { x: 0, y: -1 } },
-            "down": { input: { x: 0, y: -1 }, output: { x: 0, y: 1 } },
-            "left": { input: { x: 1, y: 0 }, output: { x: -1, y: 0 } },
-            "right": { input: { x: -1, y: 0 }, output: { x: 1, y: 0 } }
-        };
-        const dir = directions[this.pumpDirection];
+        const dir = Pump.directions[this.pumpDirection];
         this.input = map.get(this.x + dir.input.x, this.y + dir.input.y);
         this.output = map.get(this.x + dir.output.x, this.y + dir.output.y);
         if (this.input instanceof Pipe) {
@@ -37,7 +40,7 @@ class Pump extends FluidMachine {
         if (this.input && this.output &&
             this.input.CheckTag("Pipe", "FluidMashine") &&
             this.output.CheckTag("Pipe", "FluidMashine") &&
-            (inputType === outputType || outputType === "empty")) {
+            (inputType === outputType || outputType === "empty" || inputType === "empty")) {
             if (outputType === "empty") {
                 this.output.fluidType = inputType;
             }
@@ -100,4 +103,10 @@ class Pump extends FluidMachine {
     }
 }
 Pump.sprites = {};
+Pump.directions = {
+    "up": { input: { x: 0, y: 1 }, output: { x: 0, y: -1 } },
+    "down": { input: { x: 0, y: -1 }, output: { x: 0, y: 1 } },
+    "left": { input: { x: 1, y: 0 }, output: { x: -1, y: 0 } },
+    "right": { input: { x: -1, y: 0 }, output: { x: 1, y: 0 } }
+};
 //# sourceMappingURL=Pump.js.map

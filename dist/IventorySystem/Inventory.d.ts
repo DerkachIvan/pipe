@@ -4,9 +4,11 @@ declare class Inventory {
     slots: Slot[];
     constructor(slotsAmount?: number);
     Draw(ctx: CanvasRenderingContext2D, x: number, y: number): void;
-    DrawHtml(parent: HTMLElement, x: number, y: number, scale?: number): void;
-    TryInsert(item: any, amount: any): boolean;
-    TryGet(amount?: number, item?: any): {
+    DrawHtml(parent: HTMLElement): void;
+    HasItem(): boolean;
+    CanInsert(item: Item, amount: number): boolean;
+    TryInsert(item: Item, amount: number): boolean;
+    TryGet(item: Item | null, amount?: number): {
         items: any[];
         totalAmount: number;
     };

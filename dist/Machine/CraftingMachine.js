@@ -13,6 +13,26 @@ class CraftingMachine extends GameObject {
         this.craftProgress = 0;
         this.craftTime = 0;
     }
+    get item() {
+        for (let slot of this.output.slots) {
+            if (slot.item && slot.amount != 0) {
+                return slot.item;
+            }
+        }
+        return null;
+    }
+    HasItem() {
+        return this.output.HasItem();
+    }
+    LoaderTryGet() {
+        return this.output.TryGet(null, 1);
+    }
+    LoaderTryInsert(item) {
+        this.input.TryInsert(item, 1);
+    }
+    CanInsert(item, amount) {
+        return this.input.CanInsert(item, amount);
+    }
     SetRecipe(recipe) {
         if (!recipe) {
             this.recipe = null;

@@ -1,6 +1,10 @@
 declare class Loader extends GameObject {
     static sprites: {};
-    constructor(ctx: any, x: any, y: any, direction?: string);
+    item: Item | null;
+    direction: string;
+    nextObject: BeltTile | Chest | CraftingMachine | null;
+    previousObject: BeltTile | Chest | CraftingMachine | null;
+    constructor(ctx: CanvasRenderingContext2D, x: number, y: number, direction?: string);
     static dirs: {
         up: {
             input: {

@@ -1,4 +1,6 @@
-class CraftingMachine extends GameObject {
+class CraftingMachine extends GameObject implements InventoryInter{
+    input: Inventory;
+    output: Inventory
     constructor(ctx, x, y, width, height, amountOfInputSlots, amountOfOutputSlots){
         super(ctx, x, y, width, height);
         this.SetTag("CraftingMachine");
@@ -14,6 +16,32 @@ class CraftingMachine extends GameObject {
         this.crafting = false;
         this.craftProgress = 0;
         this.craftTime = 0;
+    }
+
+    get item(): Item | null{
+        for(let slot of this.output.slots){
+            if(slot.item && slot.amount != 0){
+                return slot.item;
+            }
+        }
+
+        return null;
+    }
+
+    HasItem(): boolean{
+        return this.output.HasItem();
+    }
+
+    LoaderTryGet(){
+        return this.output.TryGet(null, 1);
+    }
+
+    LoaderTryInsert(item: Item){
+        this.input.TryInsert(item, 1);
+    }
+
+    CanInsert(item: Item, amount: number): boolean {
+        return this.input.CanInsert(item, amount);
     }
 
     SetRecipe(recipe){

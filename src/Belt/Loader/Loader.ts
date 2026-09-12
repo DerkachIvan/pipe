@@ -1,12 +1,15 @@
 class Loader extends GameObject{
 static sprites = {};
-
-    constructor(ctx, x, y, direction="left"){
-        super(ctx, x, y);
+    item: Item | null;
+    direction: string;
+    nextObject: BeltTile | Chest | CraftingMachine | null;
+    previousObject: BeltTile | Chest | CraftingMachine | null;
+    constructor(ctx: CanvasRenderingContext2D, x: number, y: number, direction: string = "left"){
+        super(ctx, x, y, 1, 1);
         this.SetTag("Loader");
         this.SetTag("BeltTile");
 
-        this.item;
+        this.item = null;
         this.direction = direction
 
         this.nextObject;
@@ -34,21 +37,36 @@ static sprites = {};
 
     Update(){
         let nextDir = Loader.dirs[this.direction].output
-        let nextObj = map.get(this.x + nextDir.x, this.y + nextDir.y);
-        if(nextObj instanceof BeltTile || nextObj?.CheckTag("HasInput", "Storage")){
+        let nextObj: BeltTile | Chest | CraftingMachine | null = map.get(this.x + nextDir.x, this.y + nextDir.y);
+        if(nextObj?.CheckTag("HasInventory") || nextObj instanceof BeltTile){
             this.nextObject = nextObj;
         } else{
             this.nextObject = null;
         }
 
         let previousDir = Loader.dirs[this.direction].input
-        let previousObj = map.get(this.x + previousDir.x, this.y + previousDir.y);
-        if(previousObj instanceof BeltTile || previousObj?.CheckTag("HasOutput", "Storage")){
+        let previousObj: BeltTile | Chest | CraftingMachine | null = map.get(this.x + previousDir.x, this.y + previousDir.y);
+        if(previousObj?.CheckTag("HasInventory") || previousObj instanceof BeltTile){
             this.previousObject = previousObj;
         } else{
             this.previousObject = null;
         }
 
+        if(this.previousObject && this.nextObject){
+            let previousObjectItem: Item | null;
+            if (this.previousObject.HasItem()){
+                previousObjectItem = this.previousObject.item;
+                if (previousObjectItem){
+                    if(this.nextObject.CanInsert(previousObjectItem, 1)){
+                        this.nextObject.LoaderTryInsert(previousObjectItem);
+                        this.previousObject.LoaderTryGet()
+                    }
+                }
+            }
+        }
+        //////////////////////////////////
+
+        /*
         //console.log(this.previousObject)
         if(this.previousObject instanceof BeltTile && this.item == null){
             if(this.previousObject.item != null && this.previousObject.progress >= 1){
@@ -84,7 +102,7 @@ static sprites = {};
             if(this.nextObject.TryInsert(this.item)){
                 this.item = null
             }
-        }
+        }*/
     }
 
     static loadSprites() {

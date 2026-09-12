@@ -12,7 +12,7 @@ class Pipe extends GameObject{
         Object.defineProperty(this, "fluidType", {
             get: () => this.fluid.type?.id ?? "empty",
             set: (value) => {
-                this.fluid.type = FLUID_TYPES[value] ?? EMPTY_FLUID;
+                this.fluid.type = value ?? EMPTY_FLUID;
             }
         });
         Object.defineProperty(this, "currentFill", {
@@ -96,6 +96,11 @@ class Pipe extends GameObject{
     canConnectTo(neighbor) {
         if (!(neighbor instanceof GameObject)) return false;
         if (!(neighbor instanceof Pipe || neighbor.CheckTag("Pump", "FluidMashine"))) return false;
+
+        if(neighbor instanceof Pump){
+            neighbor as Pump;
+            return neighbor.CanConnectPipe(this.x, this. y);
+        }
 
         const thisFluidType = this.fluidType ?? "empty";
         const neighborFluidType = neighbor.fluidType ?? "empty";

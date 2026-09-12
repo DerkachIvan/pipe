@@ -1,4 +1,4 @@
-class BeltTile extends GameObject{
+class BeltTile extends GameObject implements InventoryInter{
     static sprites = {};
 
     nextBeltTile: BeltTile | null;
@@ -43,6 +43,41 @@ class BeltTile extends GameObject{
             output: {x: 1, y: 0}
         },
     };
+
+    CanInsert(item: Item, amount: number): boolean {
+        return this.progress <= 0 && this.item == null;
+    }
+
+    HasItem(): boolean{
+        if(this.progress >= 1 && this.item){
+            return true
+        }
+
+        return false;
+    }
+
+    LoaderTryGet(){
+        let itemsGroups = {
+            items: [],
+            totalAmount: 0
+        }
+    
+        if(this.item && this.progress >= 1){
+            const item = this.item;
+            this.item = null;
+            this.progress = 0;
+            itemsGroups.items.push({item: item, amount: 1});
+            itemsGroups.totalAmount += 1;
+            return itemsGroups;
+        }
+    
+        return itemsGroups;
+    }
+
+    LoaderTryInsert(item: Item){
+        this.item = item;
+        this.progress = 0
+    }
 
     setItemStartEndPoint(): void {
         console.log('alo')

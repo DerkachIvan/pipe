@@ -30,7 +30,25 @@ class Slot {
         ctx.restore();
     }
 
-    TryInsert(item: Item | null, amount: number): boolean {
+    HasItem(): boolean {
+        if(this.item === null || this.amount <= 0){
+            return false;
+        }
+        return true;
+    }
+
+    CanInsert(item: Item, amount: number): boolean {
+        if(this.item === null){
+            return true;
+        }
+        if(this.item.name == item.name){
+            if(this.amount + amount > item.maxStackSize) return false;
+            return true;
+        }
+        return false;
+    }
+
+    TryInsert(item: Item, amount: number): boolean {
         if(this.constItem){
             if(this.item?.name === item?.name){
                 if(this.amount + amount > (item?.maxStackSize || 0)) return false;
